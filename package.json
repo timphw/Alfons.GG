@@ -1,0 +1,12 @@
+{
+  "name": "alfons-gg",
+  "private": true,
+  "packageManager": "pnpm@12.21.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "companion": "pnpm --filter companion start"
+  }
+}
