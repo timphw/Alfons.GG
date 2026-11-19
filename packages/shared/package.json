@@ -11,7 +11,8 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "gen:fixtures": "tsx scripts/gen-fixtures.ts"
+    "gen:fixtures": "tsx scripts/gen-fixtures.ts",
+    "fixture:ddragon": "tsx scripts/fetch-ddragon-fixture.ts"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",

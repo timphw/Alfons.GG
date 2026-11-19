@@ -1,4 +1,5 @@
-import { LiveSnapshot, MAX_INGEST_BYTES } from "@alfons/shared";
+import { coach, LiveSnapshot, MAX_INGEST_BYTES, type CoachResult } from "@alfons/shared";
+import { getStaticData } from "@/lib/static-data";
 import { authenticateCompanion } from "@/lib/companion-auth";
 import { liveStore } from "@/lib/live-store";
 
@@ -33,6 +34,20 @@ export async function POST(req: Request) {
     return Response.json({ error: "Zu viele Snapshots" }, { status: 429, headers: { "Retry-After": "1" } });
   }
 
-  await store.put({ puuid: auth.sub, riotId: auth.rid, region: auth.reg, receivedAt: now, snapshot: parsed.data });
+  let coachResult: CoachResult | undefined;
+  try {
+    coachResult = coach(parsed.data, await getStaticData());
+  } catch (err) {
+    console.error("[coach]", err); // Live-Daten trotzdem speichern
+  }
+
+  await store.put({
+    puuid: auth.sub,
+    riotId: auth.rid,
+    region: auth.reg,
+    receivedAt: now,
+    snapshot: parsed.data,
+    coach: coachResult,
+  });
   return Response.json({ ok: true });
 }

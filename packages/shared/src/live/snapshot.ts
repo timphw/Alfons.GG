@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { CoachResult } from "../build/coach";
 
 /**
  * Kompaktes, normalisiertes Abbild eines laufenden Spiels. Der Companion erzeugt es aus
@@ -95,6 +96,8 @@ export interface LiveState {
   region: string;
   receivedAt: number;
   snapshot: LiveSnapshot;
+  /** Build-Empfehlung und Tipps für den aktiven Spieler (serverseitig berechnet) */
+  coach?: CoachResult;
 }
 
 /** Max. Größe eines Ingest-Bodys in Bytes. */

@@ -12,3 +12,6 @@ export * from "./live/snapshot";
 export * from "./live/normalize";
 export * from "./live/token";
 export * from "./live/simulator";
+export * from "./build/items";
+export * from "./build/engine";
+export * from "./build/coach";

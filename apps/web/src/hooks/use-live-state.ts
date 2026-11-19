@@ -10,11 +10,11 @@ export type LiveConnection =
   | { status: "error" };
 
 /** Abonniert /api/live/stream per Server-Sent Events. EventSource verbindet sich selbst neu. */
-export function useLiveState(puuid: string): LiveConnection {
+export function useLiveState(puuid: string, streamUrl?: string): LiveConnection {
   const [conn, setConn] = useState<LiveConnection>({ status: "connecting" });
 
   useEffect(() => {
-    const es = new EventSource(`/api/live/stream?puuid=${encodeURIComponent(puuid)}`);
+    const es = new EventSource(streamUrl ?? `/api/live/stream?puuid=${encodeURIComponent(puuid)}`);
     es.addEventListener("state", (e) => {
       try {
         setConn({ status: "live", state: JSON.parse((e as MessageEvent<string>).data) as LiveState });
@@ -25,7 +25,7 @@ export function useLiveState(puuid: string): LiveConnection {
     es.addEventListener("empty", () => setConn((c) => (c.status === "live" ? c : { status: "empty" })));
     es.onerror = () => setConn((c) => (c.status === "live" ? c : { status: "error" }));
     return () => es.close();
-  }, [puuid]);
+  }, [puuid, streamUrl]);
 
   return conn;
 }

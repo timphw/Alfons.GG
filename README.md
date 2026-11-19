@@ -6,8 +6,8 @@ League-of-Legends-Companion à la u.gg – für unsere kleine Freundesgruppe (Ha
 | --- | --- | --- |
 | 1 | Monorepo, Riot-API-Client (Rate-Limiter, Cache), Riot-ID-Suche, Profilseite | ✅ |
 | 2 | Live-Ansicht über Spectator-v5 (Teams, Champions, Runen, Spells, Ränge, Bans) | ✅ |
-| 3 | Companion (Live Client Data API) → Ingest → SSE → Live-Scores | ⏳ |
-| 4 | Build-Engine (regelbasiert, danach Statistik-Crawler) | ⏳ |
+| 3 | Companion (Live Client Data API) → Ingest → SSE → Live-Scores | ✅ |
+| 4 | Build-Engine + Coach-Tipps (regelbasiert ✅), Statistik-Crawler ⏳ | 🟡 |
 | 5 | Ingame-Overlay (Tauri, optional) | ⏳ |
 
 ## Struktur

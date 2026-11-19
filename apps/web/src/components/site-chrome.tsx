@@ -9,6 +9,9 @@ export function SiteHeader() {
           Alfons<span className="text-primary">.GG</span>
         </Link>
         <nav className="hidden items-center gap-4 text-sm text-muted-foreground sm:flex">
+          <Link href="/demo" className="hover:text-foreground">
+            Demo
+          </Link>
           <Link href="/companion" className="hover:text-foreground">
             Companion
           </Link>

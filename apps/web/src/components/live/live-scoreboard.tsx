@@ -4,6 +4,7 @@
 import { DDRAGON, ddragonUrl, type LiveEvent, type LivePlayer, type LiveSnapshot, type TeamSide } from "@alfons/shared";
 import { RadioIcon, SkullIcon, WifiOffIcon } from "lucide-react";
 import { useLiveState } from "@/hooks/use-live-state";
+import { CoachPanel } from "@/components/live/coach-panel";
 import { useNow } from "@/hooks/use-now";
 import { formatDuration, POSITION_LABEL } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -21,12 +22,15 @@ export function LiveScoreboard({
   puuid,
   assets,
   fallback,
+  streamUrl,
 }: {
   puuid: string;
   assets: LiveAssets;
   fallback: React.ReactNode;
+  /** Abweichende SSE-Quelle (z.B. Demo) */
+  streamUrl?: string;
 }) {
-  const conn = useLiveState(puuid);
+  const conn = useLiveState(puuid, streamUrl);
   const now = useNow(1000);
 
   if (conn.status !== "live") {
@@ -67,6 +71,10 @@ export function LiveScoreboard({
           {now === null ? "" : `Update vor ${Math.max(0, Math.round(age / 1000))} s`}
         </span>
       </header>
+
+      {s.status === "in-game" && (
+        <CoachPanel coach={conn.state.coach} gameTime={gameTime} gold={s.activePlayer?.currentGold} version={assets.version} />
+      )}
 
       <TeamSummary s={s} />
 
@@ -302,9 +310,6 @@ function ActivePlayerCard({ s }: { s: LiveSnapshot }) {
             </div>
           ))}
       </dl>
-      <div className="mt-4 rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
-        Build-Empfehlung („Nächster Kauf“) folgt in Phase 4.
-      </div>
     </div>
   );
 }
