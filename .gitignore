@@ -12,3 +12,4 @@ coverage
 .vercel
 .env*
 apps/web/public/downloads/alfons-companion.mjs
+apps/web/public/downloads/alfons-overlay.cjs

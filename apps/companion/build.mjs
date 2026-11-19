@@ -1,6 +1,6 @@
 // Bündelt den Companion in eine einzelne Datei für den Download auf der Website.
 import { build } from "esbuild";
-import { mkdirSync, readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync } from "node:fs";
 
 const host = process.env.ALFONS_PUBLIC_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 const outdir = new URL("../web/public/downloads/", import.meta.url);
@@ -18,4 +18,5 @@ await build({
   banner: { js: `// Alfons.GG Companion v${version} – Server: ${host}\n// Start: node alfons-companion.mjs run` },
   legalComments: "none",
 });
+copyFileSync(new URL("overlay/main.cjs", import.meta.url), new URL("alfons-overlay.cjs", outdir));
 console.log(`companion bundle → public/downloads/alfons-companion.mjs (Server ${host})`);

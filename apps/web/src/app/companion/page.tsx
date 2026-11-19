@@ -28,10 +28,13 @@ export default function CompanionPage() {
         </Step>
 
         <Step n={2} title="Companion herunterladen">
-          <p>Beide Dateien in denselben Ordner speichern, z.B. <code>Dokumente\Alfons.GG</code>.</p>
+          <p>Alle drei Dateien in denselben Ordner speichern, z.B. <code>Dokumente\Alfons.GG</code>.</p>
           <div className="flex flex-wrap gap-2">
             <a href="/downloads/alfons-companion.mjs" download className={buttonVariants()}>
               <DownloadIcon /> alfons-companion.mjs
+            </a>
+            <a href="/downloads/alfons-overlay.cjs" download className={buttonVariants({ variant: "outline" })}>
+              <DownloadIcon /> alfons-overlay.cjs
             </a>
             <a href="/downloads/Alfons-Companion-Starten.cmd" download className={buttonVariants({ variant: "outline" })}>
               <DownloadIcon /> Alfons-Companion-Starten.cmd
@@ -50,13 +53,36 @@ export default function CompanionPage() {
         <Step n={4} title="Vor jedem Spiel starten">
           <p>
             Doppelklick auf <b>Alfons-Companion-Starten.cmd</b>. Das Fenster einfach offen lassen: Spielstart und -ende
-            werden automatisch erkannt, die Live-Seite aktualisiert sich jede Sekunde.
+            werden automatisch erkannt. Im Fenster erscheinen Coach-Tipps, und das Ingame-Overlay öffnet sich.
           </p>
         </Step>
 
-        <Step n={5} title="Ohne Spiel testen">
-          <p>Simuliert ein komplettes Spiel, 30× beschleunigt:</p>
-          <CopyLine text="node alfons-companion.mjs run --mock --speed 30" />
+        <Step n={5} title="Ingame-Overlay (ein Bildschirm)">
+          <p>
+            Ein transparentes Fenster über dem Spiel zeigt Gold, nächsten Kauf, Objective-Timer und Tipps. Klicks gehen
+            durch ins Spiel. Beim ersten Start wird die Overlay-Laufzeit (Electron, ~110 MB) einmalig geladen.
+          </p>
+          <ul className="list-inside list-disc space-y-1">
+            <li>
+              In League: <b>Einstellungen → Video → Fenstermodus: „Randlos“</b>. Bei echtem Vollbild ist kein Overlay
+              sichtbar.
+            </li>
+            <li>
+              <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd>: Overlay verschieben und Größe ändern (nochmal drücken =
+              fertig, die Position wird gespeichert)
+            </li>
+            <li>
+              <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd>: ein-/ausblenden · <kbd>Strg</kbd>+<kbd>Shift</kbd>+
+              <kbd>Q</kbd>: Overlay beenden
+            </li>
+          </ul>
+          <p>Overlay nachträglich öffnen (Companion muss laufen):</p>
+          <CopyLine text="node alfons-companion.mjs overlay" />
+        </Step>
+
+        <Step n={6} title="Ohne Spiel testen">
+          <p>Simuliert ein komplettes Spiel (5× beschleunigt) inklusive Overlay:</p>
+          <CopyLine text="node alfons-companion.mjs run --mock --speed 5 --open-overlay" />
         </Step>
       </ol>
 

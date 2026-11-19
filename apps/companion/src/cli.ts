@@ -1,11 +1,14 @@
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import type { LiveSnapshot } from "@alfons/shared";
+import { coach, type CoachResult, type LiveSnapshot } from "@alfons/shared";
 import { loadConfig, saveConfig, DEFAULT_SERVER } from "./config";
 import { LiveSource, ReplaySource, SimulatorSource, type DataSource } from "./sources";
 import { GameTracker } from "./tracker";
 import { Uploader } from "./uploader";
+import { loadBuildData } from "./static-data";
+import { TerminalCoach } from "./terminal-coach";
+import { OverlayServer, launchIngameOverlay, openOverlayWindow } from "./overlay-server";
 
 const HELP = `Alfons.GG Companion
 
@@ -13,6 +16,7 @@ Befehle:
   pair <CODE> [--server URL]   Mit der Website koppeln (Code von /companion)
   run [Optionen]               Live-Daten lesen und an die Website senden
   status                       Gespeicherte Konfiguration anzeigen
+  overlay [--browser]          Ingame-Overlay öffnen (Companion muss laufen); --browser = Edge-Fenster
 
 Optionen für run:
   --mock                Simuliertes Spiel statt echter Live-Daten
@@ -23,6 +27,10 @@ Optionen für run:
   --interval MS         Poll-Intervall (Standard 1000, min. 500)
   --dry-run             Nichts senden, nur anzeigen
   --server URL          Website-URL überschreiben
+  --open-overlay        Ingame-Overlay beim Start öffnen
+  --no-overlay          Keinen lokalen Overlay-Server starten
+  --overlay-port N      Port des Overlays (Standard 2998)
+  --quiet               Keine Coach-Tipps im Terminal
 
 Umgebungsvariablen: ALFONS_SERVER, ALFONS_TOKEN, ALFONS_CONFIG_DIR
 `;
@@ -39,6 +47,11 @@ async function main() {
       record: { type: "string" },
       interval: { type: "string", default: "1000" },
       "dry-run": { type: "boolean", default: false },
+      "open-overlay": { type: "boolean", default: false },
+      "no-overlay": { type: "boolean", default: false },
+      "overlay-port": { type: "string", default: "2998" },
+      quiet: { type: "boolean", default: false },
+      browser: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
     },
   });
@@ -50,6 +63,12 @@ async function main() {
   }
   if (command === "pair") return pair(rest[0], values.server);
   if (command === "status") return status();
+  if (command === "overlay") {
+    const url = `http://127.0.0.1:${Number(values["overlay-port"])}/overlay`;
+    if (values.browser) return openOverlayWindow(url);
+    await launchIngameOverlay(url);
+    return;
+  }
   if (command === "run") {
     return run({
       server: values.server,
@@ -60,6 +79,10 @@ async function main() {
       record: values.record,
       intervalMs: Math.max(500, Number(values.interval)),
       dryRun: values["dry-run"],
+      overlay: !values["no-overlay"],
+      openOverlay: values["open-overlay"],
+      overlayPort: Number(values["overlay-port"]),
+      quiet: values.quiet,
     });
   }
   console.error(`Unbekannter Befehl: ${command}\n\n${HELP}`);
@@ -110,13 +133,17 @@ interface RunOptions {
   record?: string;
   intervalMs: number;
   dryRun: boolean;
+  overlay: boolean;
+  openOverlay: boolean;
+  overlayPort: number;
+  quiet: boolean;
 }
 
 async function run(opts: RunOptions) {
   const cfg = loadConfig();
   const server = opts.server ?? cfg.server!;
   if (!cfg.token && !opts.dryRun) {
-    console.error("Nicht gekoppelt. Öffne /companion auf der Website und führe `pnpm companion pair <CODE>` aus.");
+    console.error("Nicht gekoppelt. Öffne /companion auf der Website und führe den angezeigten pair-Befehl aus.");
     process.exitCode = 1;
     return;
   }
@@ -133,15 +160,49 @@ async function run(opts: RunOptions) {
   console.log(`Alfons.GG Companion → ${opts.dryRun ? "(dry-run)" : server}`);
   console.log(`Quelle: ${source.label}`);
   if (cfg.riotId) console.log(`Account: ${cfg.riotId}`);
+
+  // Lokale Build-Engine + Overlay (funktionieren auch ohne Website/Redis)
+  const buildData = await loadBuildData();
+  if (!buildData) console.warn("⚠ Data Dragon nicht erreichbar – keine Build-Tipps.");
+  const terminalCoach = opts.quiet ? null : new TerminalCoach();
+  let overlay: OverlayServer | null = null;
+  if (opts.overlay) {
+    overlay = new OverlayServer(opts.overlayPort);
+    try {
+      await overlay.listen();
+      console.log(`Overlay: ${overlay.url}   (Fenster öffnen: node alfons-companion.mjs overlay)`);
+      if (opts.openOverlay) void launchIngameOverlay(overlay.url);
+    } catch (err) {
+      console.warn(`⚠ Overlay-Port ${opts.overlayPort} belegt (${(err as Error).message}) – Overlay aus.`);
+      overlay = null;
+    }
+  }
+  const analyze = (s: LiveSnapshot): CoachResult | null => {
+    if (!buildData) return null;
+    try {
+      return coach(s, buildData);
+    } catch {
+      return null;
+    }
+  };
+  const show = (s: LiveSnapshot) => {
+    const c = analyze(s);
+    overlay?.update({ status: s.status, version: buildData?.version, snapshot: s, coach: c });
+    if (s.status === "in-game") terminalCoach?.print(s, c);
+  };
+
   console.log("Warte auf Spiel ... (Strg+C zum Beenden)\n");
 
   let lastLog = 0;
   let stopped = false;
-  process.on("SIGINT", () => {
+  const quit = () => {
     stopped = true;
     console.log("\nBeendet.");
-    process.exit(0);
-  });
+    process.exit(0); // löst "exit" aus → Overlay wird mit beendet
+  };
+  process.on("SIGINT", quit);
+  process.on("SIGTERM", quit);
+  process.on("SIGHUP", quit); // Konsolenfenster geschlossen (Windows)
 
   while (!stopped) {
     const started = Date.now();
@@ -160,11 +221,13 @@ async function run(opts: RunOptions) {
     switch (ev.type) {
       case "game-start":
         console.log(`▶ Spiel erkannt (${ev.snapshot.gameMode}, ${fmtTime(ev.snapshot.gameTime)})`);
+        show(ev.snapshot);
         await upload(ev.snapshot, true);
         break;
       case "snapshot": {
+        show(ev.snapshot);
         const r = await upload(ev.snapshot);
-        if (Date.now() - lastLog > 5000) {
+        if (Date.now() - lastLog > 15000) {
           lastLog = Date.now();
           console.log(statusLine(ev.snapshot, r));
         }
@@ -172,11 +235,13 @@ async function run(opts: RunOptions) {
       }
       case "game-end":
         console.log(`■ Spielende: ${ev.snapshot.result === "Win" ? "Sieg 🎉" : "Niederlage"}`);
+        show(ev.snapshot);
         await upload(ev.snapshot, true);
         recordFile = null;
         break;
       case "game-lost":
         console.log("■ Spiel nicht mehr erreichbar (beendet/abgestürzt). Warte auf nächstes Spiel ...");
+        overlay?.update({ status: "waiting" });
         recordFile = null;
         break;
     }
@@ -189,7 +254,7 @@ async function run(opts: RunOptions) {
     if (opts.dryRun || !uploader) return "dry-run";
     const r = await uploader.send(snapshot, force);
     if (r === "unauthorized") {
-      console.error("✗ Token ungültig – bitte neu koppeln (pnpm companion pair <CODE>).");
+      console.error("✗ Token ungültig – bitte auf /companion neu koppeln.");
       process.exit(1);
     }
     return r;

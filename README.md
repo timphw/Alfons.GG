@@ -8,7 +8,7 @@ League-of-Legends-Companion à la u.gg – für unsere kleine Freundesgruppe (Ha
 | 2 | Live-Ansicht über Spectator-v5 (Teams, Champions, Runen, Spells, Ränge, Bans) | ✅ |
 | 3 | Companion (Live Client Data API) → Ingest → SSE → Live-Scores | ✅ |
 | 4 | Build-Engine + Coach-Tipps (regelbasiert ✅), Statistik-Crawler ⏳ | 🟡 |
-| 5 | Ingame-Overlay (Tauri, optional) | ⏳ |
+| 5 | Ingame-Overlay (Electron statt Tauri – transparent, always-on-top, klick-durchlässig) | ✅ |
 
 ## Struktur
 
