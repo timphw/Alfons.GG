@@ -52,10 +52,9 @@ export function PairingForm() {
       {result?.ok && (
         <div className="space-y-3 rounded-xl border bg-card p-4">
           <p className="text-sm text-muted-foreground">
-            Code für <b className="text-foreground">{result.riotId}</b> (10 Minuten gültig, einmalig):
+            Pairing für <b className="text-foreground">{result.riotId}</b> – 10 Minuten gültig. Diesen Befehl komplett
+            kopieren und im Download-Ordner ausführen:
           </p>
-          <p className="font-mono text-4xl font-bold tracking-[0.3em] text-primary">{result.code}</p>
-          <p className="text-sm text-muted-foreground">Im Download-Ordner ausführen:</p>
           <CopyLine text={`node alfons-companion.mjs pair ${result.code} --server ${result.origin}`} />
         </div>
       )}

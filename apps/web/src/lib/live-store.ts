@@ -4,7 +4,7 @@ import { createClient, type RedisClientType } from "redis";
 import type { LiveState } from "@alfons/shared";
 
 /**
- * Hält Live-Spielstände und Pairing-Codes.
+ * Hält Live-Spielstände.
  * - Lokal ohne REDIS_URL: In-Memory (eine Node-Instanz, z.B. `pnpm dev`)
  * - Mit REDIS_URL (Vercel): Redis, Updates per Pub/Sub – funktioniert über mehrere Instanzen.
  */
@@ -12,14 +12,6 @@ export interface LiveStore {
   put(state: LiveState): Promise<void>;
   get(puuid: string): Promise<LiveState | null>;
   subscribe(puuid: string, onUpdate: (state: LiveState) => void): Promise<() => void>;
-  createPairing(code: string, data: PairingData, ttlSec: number): Promise<void>;
-  consumePairing(code: string): Promise<PairingData | null>;
-}
-
-export interface PairingData {
-  puuid: string;
-  riotId: string;
-  region: string;
 }
 
 /** Laufende Spiele ohne Update verschwinden nach 5 min, beendete nach 10 min. */
@@ -29,7 +21,6 @@ const ttlFor = (s: LiveState) => (s.snapshot.status === "ended" ? ENDED_TTL_SEC 
 
 class MemoryLiveStore implements LiveStore {
   private states = new Map<string, LiveState>();
-  private pairings = new Map<string, { data: PairingData; expiresAt: number }>();
   private emitter = new EventEmitter().setMaxListeners(500);
 
   async put(state: LiveState) {
@@ -52,18 +43,6 @@ class MemoryLiveStore implements LiveStore {
     return () => void this.emitter.off(puuid, onUpdate);
   }
 
-  async createPairing(code: string, data: PairingData, ttlSec: number) {
-    const now = Date.now();
-    for (const [k, v] of this.pairings) if (v.expiresAt < now) this.pairings.delete(k);
-    this.pairings.set(code, { data, expiresAt: now + ttlSec * 1000 });
-  }
-
-  async consumePairing(code: string) {
-    const p = this.pairings.get(code);
-    this.pairings.delete(code);
-    if (!p || p.expiresAt < Date.now()) return null;
-    return p.data;
-  }
 }
 
 type Redis = RedisClientType;
@@ -123,16 +102,6 @@ class RedisLiveStore implements LiveStore {
     };
   }
 
-  async createPairing(code: string, data: PairingData, ttlSec: number) {
-    await (await this.client).set(`${PREFIX}pair:${code}`, JSON.stringify(data), {
-      expiration: { type: "EX", value: ttlSec },
-    });
-  }
-
-  async consumePairing(code: string) {
-    const raw = await (await this.client).getDel(`${PREFIX}pair:${code}`);
-    return raw ? (JSON.parse(raw) as PairingData) : null;
-  }
 }
 
 const g = globalThis as unknown as { __liveStore?: LiveStore };

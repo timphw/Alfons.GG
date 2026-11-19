@@ -43,24 +43,48 @@ export async function signCompanionToken(payload: CompanionTokenPayload, secret:
   return `${body}.${b64url(sig)}`;
 }
 
-/** Gibt den Payload zurück oder `null`, wenn Signatur/Format ungültig sind. */
-export async function verifyCompanionToken(token: string, secret: string): Promise<CompanionTokenPayload | null> {
-  const [body, sig, extra] = token.split(".");
+async function verifySigned(token: string, secret: string): Promise<unknown> {
+  const [body, sig, extra] = token.trim().split(".");
   if (!body || !sig || extra !== undefined) return null;
   try {
     const ok = await crypto.subtle.verify("HMAC", await key(secret), fromB64url(sig), enc.encode(body));
     if (!ok) return null;
-    const payload = JSON.parse(dec.decode(fromB64url(body))) as CompanionTokenPayload;
-    if (payload.ver !== 1 || typeof payload.sub !== "string") return null;
-    return payload;
+    return JSON.parse(dec.decode(fromB64url(body)));
   } catch {
     return null;
   }
 }
 
-/** 6-stelliger, gut ablesbarer Pairing-Code (ohne 0/O/1/I). */
-export function generatePairingCode(): string {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = crypto.getRandomValues(new Uint8Array(6));
-  return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+/** Gibt den Payload zurück oder `null`, wenn Signatur/Format ungültig sind. */
+export async function verifyCompanionToken(token: string, secret: string): Promise<CompanionTokenPayload | null> {
+  const payload = (await verifySigned(token, secret)) as CompanionTokenPayload | null;
+  if (!payload || payload.ver !== 1 || typeof payload.sub !== "string") return null;
+  return payload;
+}
+
+/**
+ * Pairing-Code: kurzlebiges, signiertes Token (zustandslos – braucht keinen gemeinsamen Speicher,
+ * funktioniert also auch, wenn Website und Pairing-Endpunkt auf verschiedenen Instanzen laufen).
+ */
+export interface PairingPayload {
+  typ: "pair";
+  sub: string;
+  rid: string;
+  reg: string;
+  /** Ablauf (epoch s) */
+  exp: number;
+}
+
+export async function signPairingCode(payload: Omit<PairingPayload, "typ">, secret: string): Promise<string> {
+  const body = b64url(enc.encode(JSON.stringify({ typ: "pair", ...payload })));
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", await key(secret), enc.encode(body)));
+  return `${body}.${b64url(sig)}`;
+}
+
+/** `null` bei ungültiger Signatur, falschem Typ oder abgelaufenem Code. */
+export async function verifyPairingCode(code: string, secret: string, nowSec = Date.now() / 1000): Promise<PairingPayload | null> {
+  const payload = (await verifySigned(code, secret)) as PairingPayload | null;
+  if (!payload || payload.typ !== "pair" || typeof payload.sub !== "string") return null;
+  if (typeof payload.exp !== "number" || payload.exp < nowSec) return null;
+  return payload;
 }
