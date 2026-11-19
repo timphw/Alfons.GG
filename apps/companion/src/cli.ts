@@ -1,4 +1,3 @@
-#!/usr/bin/env -S npx tsx
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
@@ -92,7 +91,7 @@ async function pair(code: string | undefined, serverArg?: string) {
   const file = saveConfig({ server, token: body.token, riotId: body.riotId, region: body.region });
   console.log(`✓ Gekoppelt mit ${body.riotId} (${body.region?.toUpperCase()}) auf ${server}`);
   console.log(`  Konfiguration: ${file}`);
-  console.log(`  Starten mit:   pnpm companion run`);
+  console.log(`  Starten mit:   Alfons-Companion-Starten.cmd (oder: node alfons-companion.mjs run)`);
 }
 
 function status() {

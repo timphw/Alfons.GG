@@ -11,7 +11,8 @@ export interface CompanionConfig {
 
 export const CONFIG_DIR = process.env.ALFONS_CONFIG_DIR ?? join(homedir(), ".alfons-gg");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
-export const DEFAULT_SERVER = "http://localhost:3000";
+/** Beim Bundling für Vercel durch die Produktions-URL ersetzt (siehe build.mjs) */
+export const DEFAULT_SERVER = process.env.ALFONS_DEFAULT_SERVER ?? "http://localhost:3000";
 
 export function loadConfig(): CompanionConfig {
   let file: CompanionConfig = {};

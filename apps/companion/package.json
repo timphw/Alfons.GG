@@ -4,18 +4,22 @@
   "private": true,
   "type": "module",
   "description": "Alfons.GG Companion – liest die Live Client Data API und sendet Snapshots an die Website",
-  "bin": { "alfons-companion": "./src/cli.ts" },
+  "bin": {
+    "alfons-companion": "./src/cli.ts"
+  },
   "scripts": {
     "start": "tsx src/cli.ts",
     "mock": "tsx src/cli.ts run --mock",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "bundle": "node build.mjs"
   },
   "dependencies": {
     "@alfons/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24",
+    "esbuild": "^0.28.2",
     "tsx": "^4",
     "typescript": "^5",
     "vitest": "^3"

@@ -8,3 +8,7 @@ coverage
 *.tsbuildinfo
 .vercel
 .DS_Store
+
+.vercel
+.env*
+apps/web/public/downloads/alfons-companion.mjs

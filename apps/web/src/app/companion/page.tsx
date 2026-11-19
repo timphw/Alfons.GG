@@ -1,30 +1,9 @@
 import type { Metadata } from "next";
-import { ShieldCheckIcon } from "lucide-react";
+import { DownloadIcon, ShieldCheckIcon } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { CopyLine, PairingForm } from "./pairing-form";
 
 export const metadata: Metadata = { title: "Companion" };
-
-const STEPS = [
-  {
-    title: "Companion installieren",
-    body: "Aktuell als Node-CLI aus dem Repo (ein Windows-Installer folgt mit dem Overlay). Voraussetzung: Node.js ≥ 22 und pnpm.",
-    commands: ["git clone <repo-url> alfons-gg && cd alfons-gg", "pnpm install"],
-  },
-  {
-    title: "Mit deinem Account koppeln",
-    body: "Erzeuge unten einen Pairing-Code und führe den angezeigten Befehl aus. Das Token wird lokal unter ~/.alfons-gg/config.json gespeichert.",
-  },
-  {
-    title: "Starten – am besten vor dem Spiel",
-    body: "Der Companion wartet auf ein Spiel, erkennt Start und Ende automatisch und sendet jede Sekunde einen Snapshot.",
-    commands: ["pnpm companion run"],
-  },
-  {
-    title: "Ohne Spiel testen",
-    body: "Simuliert ein komplettes Spiel (hier 30× beschleunigt). Mit --record ORDNER lassen sich echte Spiele für Tests aufnehmen.",
-    commands: ["pnpm companion run --mock --speed 30"],
-  },
-];
 
 export default function CompanionPage() {
   return (
@@ -38,29 +17,71 @@ export default function CompanionPage() {
       </div>
 
       <ol className="space-y-6">
-        {STEPS.map((s, i) => (
-          <li key={s.title} className="flex gap-4">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
-              {i + 1}
-            </span>
-            <div className="min-w-0 flex-1 space-y-2">
-              <h2 className="font-semibold">{s.title}</h2>
-              <p className="text-sm text-muted-foreground">{s.body}</p>
-              {s.commands?.map((c) => <CopyLine key={c} text={c} />)}
-              {i === 1 && <PairingForm />}
-            </div>
-          </li>
-        ))}
+        <Step n={1} title="Node.js installieren (einmalig)">
+          <p>
+            Lade die LTS-Version von{" "}
+            <a href="https://nodejs.org" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+              nodejs.org
+            </a>{" "}
+            herunter und installiere sie mit den Standardeinstellungen.
+          </p>
+        </Step>
+
+        <Step n={2} title="Companion herunterladen">
+          <p>Beide Dateien in denselben Ordner speichern, z.B. <code>Dokumente\Alfons.GG</code>.</p>
+          <div className="flex flex-wrap gap-2">
+            <a href="/downloads/alfons-companion.mjs" download className={buttonVariants()}>
+              <DownloadIcon /> alfons-companion.mjs
+            </a>
+            <a href="/downloads/Alfons-Companion-Starten.cmd" download className={buttonVariants({ variant: "outline" })}>
+              <DownloadIcon /> Alfons-Companion-Starten.cmd
+            </a>
+          </div>
+        </Step>
+
+        <Step n={3} title="Mit deinem Account koppeln (einmalig)">
+          <p>
+            Code erzeugen, dann im Download-Ordner ein Terminal öffnen (im Explorer in die Adressleiste{" "}
+            <code>cmd</code> tippen) und den angezeigten Befehl ausführen.
+          </p>
+          <PairingForm />
+        </Step>
+
+        <Step n={4} title="Vor jedem Spiel starten">
+          <p>
+            Doppelklick auf <b>Alfons-Companion-Starten.cmd</b>. Das Fenster einfach offen lassen: Spielstart und -ende
+            werden automatisch erkannt, die Live-Seite aktualisiert sich jede Sekunde.
+          </p>
+        </Step>
+
+        <Step n={5} title="Ohne Spiel testen">
+          <p>Simuliert ein komplettes Spiel, 30× beschleunigt:</p>
+          <CopyLine text="node alfons-companion.mjs run --mock --speed 30" />
+        </Step>
       </ol>
 
       <div className="flex gap-3 rounded-xl border bg-card p-4 text-sm text-muted-foreground">
         <ShieldCheckIcon className="size-5 shrink-0 text-win" />
         <p>
-          Der Companion greift nicht in das Spiel ein: Er liest ausschließlich die offizielle lokale Schnittstelle
-          <code className="mx-1">127.0.0.1:2999</code>, die Riot für genau solche Tools bereitstellt – nur Daten, die
-          du im Spiel ohnehin siehst. Vanguard-sicher.
+          Der Companion greift nicht in das Spiel ein. Er liest ausschließlich die offizielle lokale Schnittstelle
+          <code className="mx-1">127.0.0.1:2999</code>, die Riot für genau solche Tools bereitstellt. Das sind nur Daten,
+          die du im Spiel ohnehin siehst, und er verträgt sich mit Vanguard.
         </p>
       </div>
     </div>
+  );
+}
+
+function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <li className="flex gap-4">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
+        {n}
+      </span>
+      <div className="min-w-0 flex-1 space-y-2 text-sm text-muted-foreground">
+        <h2 className="text-base font-semibold text-foreground">{title}</h2>
+        {children}
+      </div>
+    </li>
   );
 }

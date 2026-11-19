@@ -35,7 +35,7 @@ export async function GET(req: Request) {
       if (current) sendState(current);
       else send("event: empty\ndata: {}\n\n");
 
-      const unsubscribe = store.subscribe(puuid, sendState);
+      const unsubscribe = await store.subscribe(puuid, sendState);
       const heartbeat = setInterval(() => send(": ping\n\n"), HEARTBEAT_MS);
       const timeout = setTimeout(() => cleanup(), MAX_STREAM_MS);
 

@@ -55,8 +55,8 @@ export function PairingForm() {
             Code für <b className="text-foreground">{result.riotId}</b> (10 Minuten gültig, einmalig):
           </p>
           <p className="font-mono text-4xl font-bold tracking-[0.3em] text-primary">{result.code}</p>
-          <p className="text-sm text-muted-foreground">Im Companion-Ordner auf dem Spieler-PC ausführen:</p>
-          <CopyLine text={`pnpm companion pair ${result.code} --server ${result.origin}`} />
+          <p className="text-sm text-muted-foreground">Im Download-Ordner ausführen:</p>
+          <CopyLine text={`node alfons-companion.mjs pair ${result.code} --server ${result.origin}`} />
         </div>
       )}
     </div>
