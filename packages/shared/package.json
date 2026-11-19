@@ -10,10 +10,15 @@
   },
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen:fixtures": "tsx scripts/gen-fixtures.ts"
   },
   "devDependencies": {
+    "@types/node": "^20.19.43",
     "typescript": "^5",
     "vitest": "^3"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
   }
 }

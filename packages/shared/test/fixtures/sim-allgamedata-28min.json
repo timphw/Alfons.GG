@@ -1,0 +1,1614 @@
+{
+  "activePlayer": {
+    "riotId": "Alfons#EUW",
+    "riotIdGameName": "Alfons",
+    "riotIdTagLine": "EUW",
+    "summonerName": "Alfons#EUW",
+    "level": 18,
+    "currentGold": 215.17,
+    "championStats": {
+      "attackDamage": 210.2,
+      "abilityPower": 0,
+      "armor": 110.60000000000001,
+      "magicResist": 53.400000000000006,
+      "maxHealth": 2520,
+      "currentHealth": 2520,
+      "attackSpeed": 1.095,
+      "moveSpeed": 370,
+      "abilityHaste": 0,
+      "critChance": 0.25,
+      "lifeSteal": 0
+    }
+  },
+  "allPlayers": [
+    {
+      "championName": "Darius",
+      "rawChampionName": "game_character_displayname_Darius",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1054,
+          "displayName": "Dorans Schild",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3047,
+          "displayName": "Stahlkappen",
+          "price": 1200,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6631,
+          "displayName": "Schrittbrecher",
+          "price": 3300,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3053,
+          "displayName": "Steraks Pfand",
+          "price": 3200,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3742,
+          "displayName": "Totmannsplatte",
+          "price": 2900,
+          "count": 1,
+          "slot": 4,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "TOP",
+      "respawnTimer": 0,
+      "riotId": "Garnele#EUW",
+      "riotIdGameName": "Garnele",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Garnele#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 7,
+        "deaths": 1,
+        "assists": 10,
+        "creepScore": 183,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Teleportation",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerTeleport_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Lee Sin",
+      "rawChampionName": "game_character_displayname_LeeSin",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1102,
+          "displayName": "Windläufer-Welpe",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6692,
+          "displayName": "Finsternis",
+          "price": 2900,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3158,
+          "displayName": "Ionische Stiefel",
+          "price": 900,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3071,
+          "displayName": "Schwarzes Beil",
+          "price": 3000,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6333,
+          "displayName": "Todestanz",
+          "price": 3300,
+          "count": 1,
+          "slot": 4,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "JUNGLE",
+      "respawnTimer": 0,
+      "riotId": "Waldfee#EUW",
+      "riotIdGameName": "Waldfee",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Waldfee#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 5,
+        "deaths": 4,
+        "assists": 9,
+        "creepScore": 136,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Zerschmettern",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerSmite_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Ahri",
+      "rawChampionName": "game_character_displayname_Ahri",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1056,
+          "displayName": "Dorans Ring",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6655,
+          "displayName": "Ludens Begleiter",
+          "price": 2750,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3020,
+          "displayName": "Zauberschuhe",
+          "price": 1100,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 4645,
+          "displayName": "Schattenflamme",
+          "price": 3200,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3089,
+          "displayName": "Rabadons Todeshaube",
+          "price": 3600,
+          "count": 1,
+          "slot": 4,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "MIDDLE",
+      "respawnTimer": 0,
+      "riotId": "Mittelfeld#EUW",
+      "riotIdGameName": "Mittelfeld",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Mittelfeld#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 4,
+        "deaths": 4,
+        "assists": 9,
+        "creepScore": 185,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Entzünden",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8112,
+          "displayName": "Elektrisieren"
+        },
+        "primaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        },
+        "secondaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Jinx",
+      "rawChampionName": "game_character_displayname_Jinx",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3006,
+          "displayName": "Berserkerbeinschienen",
+          "price": 1100,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6672,
+          "displayName": "Krakentöter",
+          "price": 3100,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3031,
+          "displayName": "Klinge der Unendlichkeit",
+          "price": 3450,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3094,
+          "displayName": "Schnellfeuerkanone",
+          "price": 2650,
+          "count": 1,
+          "slot": 4,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "BOTTOM",
+      "respawnTimer": 0,
+      "riotId": "Alfons#EUW",
+      "riotIdGameName": "Alfons",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Alfons#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 3,
+        "deaths": 5,
+        "assists": 7,
+        "creepScore": 191,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Heilen",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerHeal_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8008,
+          "displayName": "Tödliches Tempo"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8300,
+          "displayName": "Inspiration"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Thresh",
+      "rawChampionName": "game_character_displayname_Thresh",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 3865,
+          "displayName": "Weltatlas",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3047,
+          "displayName": "Stahlkappen",
+          "price": 1200,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3190,
+          "displayName": "Medaillon der Eisernen Solari",
+          "price": 2200,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3109,
+          "displayName": "Ritterlicher Schwur",
+          "price": 2300,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "UTILITY",
+      "respawnTimer": 0,
+      "riotId": "Hakenmeister#EUW",
+      "riotIdGameName": "Hakenmeister",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Hakenmeister#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 7,
+        "deaths": 2,
+        "assists": 5,
+        "creepScore": 30,
+        "wardScore": 44.8
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Erschöpfung",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerExhaust_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8439,
+          "displayName": "Nachbeben"
+        },
+        "primaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        },
+        "secondaryRuneTree": {
+          "id": 8300,
+          "displayName": "Inspiration"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Malphite",
+      "rawChampionName": "game_character_displayname_Malphite",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1054,
+          "displayName": "Dorans Schild",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3068,
+          "displayName": "Sonnenfeuer-Aegis",
+          "price": 2700,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3047,
+          "displayName": "Stahlkappen",
+          "price": 1200,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3075,
+          "displayName": "Dornenpanzer",
+          "price": 2450,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "TOP",
+      "respawnTimer": 0,
+      "riotId": "Felsbrocken#1234",
+      "riotIdGameName": "Felsbrocken",
+      "riotIdTagLine": "1234",
+      "summonerName": "Felsbrocken#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 1,
+        "deaths": 5,
+        "assists": 6,
+        "creepScore": 170,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Teleportation",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerTeleport_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8437,
+          "displayName": "Griff der Untoten"
+        },
+        "primaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        },
+        "secondaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Warwick",
+      "rawChampionName": "game_character_displayname_Warwick",
+      "isBot": false,
+      "isDead": true,
+      "items": [
+        {
+          "itemID": 1103,
+          "displayName": "Moosstampfer-Welpe",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3153,
+          "displayName": "Klinge des gestürzten Königs",
+          "price": 3200,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3111,
+          "displayName": "Quecksilberstiefel",
+          "price": 1250,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3748,
+          "displayName": "Titanische Hydra",
+          "price": 3300,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "JUNGLE",
+      "respawnTimer": 1.4,
+      "riotId": "Blutdurst#1234",
+      "riotIdGameName": "Blutdurst",
+      "riotIdTagLine": "1234",
+      "summonerName": "Blutdurst#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 2,
+        "deaths": 3,
+        "assists": 6,
+        "creepScore": 138,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Zerschmettern",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerSmite_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Zed",
+      "rawChampionName": "game_character_displayname_Zed",
+      "isBot": false,
+      "isDead": true,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3142,
+          "displayName": "Youmuus Geistklinge",
+          "price": 2800,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3158,
+          "displayName": "Ionische Stiefel",
+          "price": 900,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6694,
+          "displayName": "Serylda's Groll",
+          "price": 3000,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "MIDDLE",
+      "respawnTimer": 22.4,
+      "riotId": "Schattenmann#1234",
+      "riotIdGameName": "Schattenmann",
+      "riotIdTagLine": "1234",
+      "summonerName": "Schattenmann#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 5,
+        "deaths": 7,
+        "assists": 8,
+        "creepScore": 177,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Entzünden",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8112,
+          "displayName": "Elektrisieren"
+        },
+        "primaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        },
+        "secondaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Samira",
+      "rawChampionName": "game_character_displayname_Samira",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3072,
+          "displayName": "Blutdürster",
+          "price": 3400,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3006,
+          "displayName": "Berserkerbeinschienen",
+          "price": 1100,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3031,
+          "displayName": "Klinge der Unendlichkeit",
+          "price": 3450,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "BOTTOM",
+      "respawnTimer": 0,
+      "riotId": "Stilwechsel#1234",
+      "riotIdGameName": "Stilwechsel",
+      "riotIdTagLine": "1234",
+      "summonerName": "Stilwechsel#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 4,
+        "deaths": 6,
+        "assists": 3,
+        "creepScore": 187,
+        "wardScore": 12.6
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Barriere",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerBarrier_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8021,
+          "displayName": "Leichtfüßigkeit"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Soraka",
+      "rawChampionName": "game_character_displayname_Soraka",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 3865,
+          "displayName": "Weltatlas",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3158,
+          "displayName": "Ionische Stiefel",
+          "price": 900,
+          "count": 1,
+          "slot": 1,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 6617,
+          "displayName": "Mondsteinerneuerer",
+          "price": 2200,
+          "count": 1,
+          "slot": 2,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3504,
+          "displayName": "Glühendes Rauchfass",
+          "price": 2300,
+          "count": 1,
+          "slot": 3,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 18,
+      "position": "UTILITY",
+      "respawnTimer": 0,
+      "riotId": "Sternenheil#1234",
+      "riotIdGameName": "Sternenheil",
+      "riotIdTagLine": "1234",
+      "summonerName": "Sternenheil#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 4,
+        "deaths": 5,
+        "assists": 2,
+        "creepScore": 29,
+        "wardScore": 44.8
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Erschöpfung",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerExhaust_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8214,
+          "displayName": "Aery herbeirufen"
+        },
+        "primaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    }
+  ],
+  "events": {
+    "Events": [
+      {
+        "EventID": 0,
+        "EventTime": 0,
+        "EventName": "GameStart"
+      },
+      {
+        "EventID": 1,
+        "EventTime": 65,
+        "EventName": "MinionsSpawning"
+      },
+      {
+        "EventID": 2,
+        "EventTime": 200,
+        "EventName": "ChampionKill",
+        "KillerName": "Waldfee",
+        "VictimName": "Felsbrocken",
+        "Assisters": []
+      },
+      {
+        "EventID": 3,
+        "EventTime": 200,
+        "EventName": "FirstBlood",
+        "Recipient": "Waldfee"
+      },
+      {
+        "EventID": 4,
+        "EventTime": 248,
+        "EventName": "ChampionKill",
+        "KillerName": "Schattenmann",
+        "VictimName": "Garnele",
+        "Assisters": []
+      },
+      {
+        "EventID": 5,
+        "EventTime": 289,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Schattenmann",
+        "Assisters": []
+      },
+      {
+        "EventID": 6,
+        "EventTime": 300,
+        "EventName": "DragonKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "DragonType": "Hextech",
+        "Stolen": "False"
+      },
+      {
+        "EventID": 7,
+        "EventTime": 327,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Felsbrocken",
+        "Assisters": [
+          "Garnele",
+          "Waldfee",
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 8,
+        "EventTime": 354,
+        "EventName": "ChampionKill",
+        "KillerName": "Sternenheil",
+        "VictimName": "Waldfee",
+        "Assisters": [
+          "Schattenmann"
+        ]
+      },
+      {
+        "EventID": 9,
+        "EventTime": 360,
+        "EventName": "HordeKill",
+        "KillerName": "Blutdurst",
+        "Assisters": [],
+        "Stolen": "False"
+      },
+      {
+        "EventID": 10,
+        "EventTime": 360,
+        "EventName": "HordeKill",
+        "KillerName": "Blutdurst",
+        "Assisters": [],
+        "Stolen": "False"
+      },
+      {
+        "EventID": 11,
+        "EventTime": 360,
+        "EventName": "HordeKill",
+        "KillerName": "Blutdurst",
+        "Assisters": [],
+        "Stolen": "False"
+      },
+      {
+        "EventID": 12,
+        "EventTime": 395,
+        "EventName": "ChampionKill",
+        "KillerName": "Alfons",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Garnele",
+          "Waldfee"
+        ]
+      },
+      {
+        "EventID": 13,
+        "EventTime": 431,
+        "EventName": "ChampionKill",
+        "KillerName": "Sternenheil",
+        "VictimName": "Alfons",
+        "Assisters": [
+          "Felsbrocken",
+          "Blutdurst",
+          "Schattenmann"
+        ]
+      },
+      {
+        "EventID": 14,
+        "EventTime": 453,
+        "EventName": "ChampionKill",
+        "KillerName": "Alfons",
+        "VictimName": "Sternenheil",
+        "Assisters": [
+          "Garnele"
+        ]
+      },
+      {
+        "EventID": 15,
+        "EventTime": 498,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Waldfee"
+        ]
+      },
+      {
+        "EventID": 16,
+        "EventTime": 517,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Blutdurst",
+        "Assisters": [
+          "Waldfee",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 17,
+        "EventTime": 570,
+        "EventName": "ChampionKill",
+        "KillerName": "Mittelfeld",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Garnele"
+        ]
+      },
+      {
+        "EventID": 18,
+        "EventTime": 597,
+        "EventName": "ChampionKill",
+        "KillerName": "Stilwechsel",
+        "VictimName": "Mittelfeld",
+        "Assisters": [
+          "Schattenmann",
+          "Sternenheil"
+        ]
+      },
+      {
+        "EventID": 19,
+        "EventTime": 600,
+        "EventName": "DragonKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "DragonType": "Air",
+        "Stolen": "False"
+      },
+      {
+        "EventID": 20,
+        "EventTime": 619,
+        "EventName": "ChampionKill",
+        "KillerName": "Sternenheil",
+        "VictimName": "Waldfee",
+        "Assisters": [
+          "Felsbrocken",
+          "Schattenmann"
+        ]
+      },
+      {
+        "EventID": 21,
+        "EventTime": 666,
+        "EventName": "ChampionKill",
+        "KillerName": "Schattenmann",
+        "VictimName": "Mittelfeld",
+        "Assisters": [
+          "Blutdurst",
+          "Stilwechsel"
+        ]
+      },
+      {
+        "EventID": 22,
+        "EventTime": 702,
+        "EventName": "ChampionKill",
+        "KillerName": "Alfons",
+        "VictimName": "Sternenheil",
+        "Assisters": [
+          "Waldfee",
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 23,
+        "EventTime": 720,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_L_03_A",
+        "KillerName": "Alfons",
+        "Assisters": []
+      },
+      {
+        "EventID": 24,
+        "EventTime": 725,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Felsbrocken",
+        "Assisters": [
+          "Garnele"
+        ]
+      },
+      {
+        "EventID": 25,
+        "EventTime": 763,
+        "EventName": "ChampionKill",
+        "KillerName": "Stilwechsel",
+        "VictimName": "Mittelfeld",
+        "Assisters": [
+          "Blutdurst"
+        ]
+      },
+      {
+        "EventID": 26,
+        "EventTime": 800,
+        "EventName": "ChampionKill",
+        "KillerName": "Waldfee",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Garnele",
+          "Mittelfeld",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 27,
+        "EventTime": 831,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 28,
+        "EventTime": 847,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T1_R_03_A",
+        "KillerName": "Felsbrocken",
+        "Assisters": []
+      },
+      {
+        "EventID": 29,
+        "EventTime": 865,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 30,
+        "EventTime": 900,
+        "EventName": "DragonKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "DragonType": "Fire",
+        "Stolen": "False"
+      },
+      {
+        "EventID": 31,
+        "EventTime": 900,
+        "EventName": "HeraldKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "Stolen": "False"
+      },
+      {
+        "EventID": 32,
+        "EventTime": 908,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Blutdurst",
+        "Assisters": [
+          "Mittelfeld",
+          "Hakenmeister"
+        ]
+      },
+      {
+        "EventID": 33,
+        "EventTime": 923,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_C_03_A",
+        "KillerName": "Alfons",
+        "Assisters": []
+      },
+      {
+        "EventID": 34,
+        "EventTime": 944,
+        "EventName": "ChampionKill",
+        "KillerName": "Blutdurst",
+        "VictimName": "Alfons",
+        "Assisters": [
+          "Schattenmann"
+        ]
+      },
+      {
+        "EventID": 35,
+        "EventTime": 975,
+        "EventName": "ChampionKill",
+        "KillerName": "Schattenmann",
+        "VictimName": "Waldfee",
+        "Assisters": [
+          "Felsbrocken",
+          "Blutdurst",
+          "Stilwechsel"
+        ]
+      },
+      {
+        "EventID": 36,
+        "EventTime": 1007,
+        "EventName": "ChampionKill",
+        "KillerName": "Stilwechsel",
+        "VictimName": "Alfons",
+        "Assisters": [
+          "Schattenmann",
+          "Sternenheil"
+        ]
+      },
+      {
+        "EventID": 37,
+        "EventTime": 1030,
+        "EventName": "ChampionKill",
+        "KillerName": "Mittelfeld",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Garnele",
+          "Hakenmeister"
+        ]
+      },
+      {
+        "EventID": 38,
+        "EventTime": 1058,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T1_L_03_A",
+        "KillerName": "Felsbrocken",
+        "Assisters": []
+      },
+      {
+        "EventID": 39,
+        "EventTime": 1078,
+        "EventName": "ChampionKill",
+        "KillerName": "Blutdurst",
+        "VictimName": "Mittelfeld",
+        "Assisters": []
+      },
+      {
+        "EventID": 40,
+        "EventTime": 1121,
+        "EventName": "ChampionKill",
+        "KillerName": "Sternenheil",
+        "VictimName": "Hakenmeister",
+        "Assisters": [
+          "Schattenmann"
+        ]
+      },
+      {
+        "EventID": 41,
+        "EventTime": 1145,
+        "EventName": "ChampionKill",
+        "KillerName": "Waldfee",
+        "VictimName": "Felsbrocken",
+        "Assisters": [
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 42,
+        "EventTime": 1149,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T1_L_03_A",
+        "KillerName": "Blutdurst",
+        "Assisters": []
+      },
+      {
+        "EventID": 43,
+        "EventTime": 1190,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Waldfee",
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 44,
+        "EventTime": 1200,
+        "EventName": "DragonKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "DragonType": "Fire",
+        "Stolen": "False"
+      },
+      {
+        "EventID": 45,
+        "EventTime": 1221,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Garnele",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 46,
+        "EventTime": 1249,
+        "EventName": "ChampionKill",
+        "KillerName": "Schattenmann",
+        "VictimName": "Waldfee",
+        "Assisters": [
+          "Felsbrocken",
+          "Blutdurst"
+        ]
+      },
+      {
+        "EventID": 47,
+        "EventTime": 1278,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_R_03_A",
+        "KillerName": "Mittelfeld",
+        "Assisters": []
+      },
+      {
+        "EventID": 48,
+        "EventTime": 1294,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Sternenheil",
+        "Assisters": [
+          "Waldfee",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 49,
+        "EventTime": 1344,
+        "EventName": "ChampionKill",
+        "KillerName": "Waldfee",
+        "VictimName": "Sternenheil",
+        "Assisters": [
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 50,
+        "EventTime": 1394,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Hakenmeister"
+        ]
+      },
+      {
+        "EventID": 51,
+        "EventTime": 1417,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_R_03_A",
+        "KillerName": "Waldfee",
+        "Assisters": []
+      },
+      {
+        "EventID": 52,
+        "EventTime": 1436,
+        "EventName": "ChampionKill",
+        "KillerName": "Waldfee",
+        "VictimName": "Sternenheil",
+        "Assisters": [
+          "Garnele",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 53,
+        "EventTime": 1468,
+        "EventName": "ChampionKill",
+        "KillerName": "Hakenmeister",
+        "VictimName": "Felsbrocken",
+        "Assisters": [
+          "Waldfee",
+          "Mittelfeld"
+        ]
+      },
+      {
+        "EventID": 54,
+        "EventTime": 1492,
+        "EventName": "ChampionKill",
+        "KillerName": "Mittelfeld",
+        "VictimName": "Stilwechsel",
+        "Assisters": [
+          "Garnele",
+          "Alfons"
+        ]
+      },
+      {
+        "EventID": 55,
+        "EventTime": 1500,
+        "EventName": "DragonKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "DragonType": "Hextech",
+        "Stolen": "False"
+      },
+      {
+        "EventID": 56,
+        "EventTime": 1500,
+        "EventName": "BaronKill",
+        "KillerName": "Waldfee",
+        "Assisters": [],
+        "Stolen": "False"
+      },
+      {
+        "EventID": 57,
+        "EventTime": 1518,
+        "EventName": "ChampionKill",
+        "KillerName": "Schattenmann",
+        "VictimName": "Hakenmeister",
+        "Assisters": [
+          "Felsbrocken"
+        ]
+      },
+      {
+        "EventID": 58,
+        "EventTime": 1548,
+        "EventName": "ChampionKill",
+        "KillerName": "Felsbrocken",
+        "VictimName": "Alfons",
+        "Assisters": [
+          "Schattenmann",
+          "Stilwechsel"
+        ]
+      },
+      {
+        "EventID": 59,
+        "EventTime": 1564,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_C_03_A",
+        "KillerName": "Garnele",
+        "Assisters": []
+      },
+      {
+        "EventID": 60,
+        "EventTime": 1598,
+        "EventName": "ChampionKill",
+        "KillerName": "Stilwechsel",
+        "VictimName": "Alfons",
+        "Assisters": [
+          "Felsbrocken",
+          "Blutdurst"
+        ]
+      },
+      {
+        "EventID": 61,
+        "EventTime": 1641,
+        "EventName": "TurretKilled",
+        "TurretKilled": "Turret_T2_L_03_A",
+        "KillerName": "Garnele",
+        "Assisters": []
+      },
+      {
+        "EventID": 62,
+        "EventTime": 1643,
+        "EventName": "ChampionKill",
+        "KillerName": "Garnele",
+        "VictimName": "Blutdurst",
+        "Assisters": [
+          "Waldfee",
+          "Hakenmeister"
+        ]
+      },
+      {
+        "EventID": 63,
+        "EventTime": 1664,
+        "EventName": "ChampionKill",
+        "KillerName": "Mittelfeld",
+        "VictimName": "Schattenmann",
+        "Assisters": [
+          "Hakenmeister"
+        ]
+      }
+    ]
+  },
+  "gameData": {
+    "gameMode": "CLASSIC",
+    "gameTime": 1680,
+    "mapName": "Map11",
+    "mapNumber": 11,
+    "mapTerrain": "Default"
+  }
+}

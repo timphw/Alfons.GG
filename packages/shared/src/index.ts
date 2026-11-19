@@ -7,3 +7,8 @@ export * from "./riot/client";
 export * from "./ddragon";
 export * from "./queues";
 export * from "./profile";
+export * from "./live/lcd-types";
+export * from "./live/snapshot";
+export * from "./live/normalize";
+export * from "./live/token";
+export * from "./live/simulator";

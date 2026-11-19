@@ -1,0 +1,48 @@
+{
+  "activePlayer": { "error": "Spectator mode doesn't currently support this feature" },
+  "allPlayers": [
+    {
+      "championName": "Wukong",
+      "rawChampionName": "game_character_displayname_MonkeyKing",
+      "isBot": false,
+      "isDead": true,
+      "items": [{ "itemID": 3078, "displayName": "Trinity Force", "price": 3333, "count": 1, "slot": 0 }],
+      "level": 9,
+      "position": "",
+      "respawnTimer": 12.5,
+      "summonerName": "OldName",
+      "team": "ORDER",
+      "scores": { "kills": 2, "deaths": 1, "assists": 0, "creepScore": 80, "wardScore": 3.456 },
+      "summonerSpells": {
+        "summonerSpellOne": { "displayName": "Flash", "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName" },
+        "summonerSpellTwo": { "displayName": "Ghost" }
+      }
+    },
+    {
+      "championName": "Kai'Sa",
+      "isBot": true,
+      "items": [],
+      "level": 8,
+      "team": "CHAOS",
+      "riotIdGameName": "Bot Kai'Sa",
+      "scores": { "kills": 1, "deaths": 2, "assists": 0, "creepScore": 60, "wardScore": 0 }
+    },
+    {
+      "championName": "Minion",
+      "items": [],
+      "level": 1,
+      "team": "NEUTRAL",
+      "scores": { "kills": 0, "deaths": 0, "assists": 0, "creepScore": 0, "wardScore": 0 }
+    }
+  ],
+  "events": {
+    "Events": [
+      { "EventID": 0, "EventName": "GameStart", "EventTime": 0.02 },
+      { "EventID": 1, "EventName": "ChampionKill", "EventTime": 200.1, "KillerName": "OldName", "VictimName": "Bot Kai'Sa", "Assisters": [] },
+      { "EventID": 2, "EventName": "TurretKilled", "EventTime": 610, "TurretKilled": "Turret_T2_C_05_A", "KillerName": "Minion_T100L0S1N0", "Assisters": [] },
+      { "EventID": 3, "EventName": "InhibKilled", "EventTime": 900, "InhibKilled": "Barracks_T1_L1", "KillerName": "Bot Kai'Sa", "Assisters": [] },
+      { "EventID": 4, "EventName": "DragonKill", "EventTime": 700, "DragonType": "Elder", "Stolen": "True", "KillerName": "Bot Kai'Sa", "Assisters": [] }
+    ]
+  },
+  "gameData": { "gameMode": "PRACTICETOOL", "gameTime": 912.3456, "mapNumber": 11 }
+}

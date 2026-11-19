@@ -8,5 +8,8 @@
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
     "companion": "pnpm --filter companion start"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
   }
 }

@@ -14,7 +14,8 @@ import {
   type StaticData,
 } from "@alfons/shared";
 import { load, resolvePlayer, riot } from "@/lib/riot";
-import { getStaticData } from "@/lib/static-data";
+import { getStaticData, liveAssets } from "@/lib/static-data";
+import { LiveScoreboard } from "@/components/live/live-scoreboard";
 import { ChampionIcon, RuneIcon, SpellIcon } from "@/components/game-icons";
 import { Notice, PLAYER_ERRORS } from "@/components/notice";
 import { GameTimer } from "@/components/live/game-timer";
@@ -64,68 +65,81 @@ async function Live({ params }: { params: PageProps<"/live/[region]/[riotId]">["
   if (!res.value.ok) return <Notice title={PLAYER_ERRORS[res.value.reason]} />;
   const { region, account, game, data, rankByPuuid } = res.value;
 
+  const assets = liveAssets(data);
+  const companionCta = (
+    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-dashed p-5">
+      <PlugZapIcon className="size-6 text-primary" />
+      <div className="flex-1">
+        <p className="font-semibold">Live-Scores &amp; Build-Empfehlungen</p>
+        <p className="text-sm text-muted-foreground">
+          Items, KDA, Gold, Objectives und dynamische Builds gibt es, sobald der Alfons.GG Companion auf dem
+          Spieler-PC läuft. Diese Seite aktualisiert sich dann automatisch.
+        </p>
+      </div>
+      <Link href="/companion" className={buttonVariants({ variant: "outline" })}>
+        Companion einrichten
+      </Link>
+    </div>
+  );
+
   if (!game || !rankByPuuid) {
-      return (
-        <>
-          <AutoRefresh seconds={30} />
-          <Notice title={`${account.gameName}#${account.tagLine} ist gerade nicht im Spiel`}>
-            Die Seite prüft alle 30 Sekunden erneut.{" "}
-            <Link href={`/player/${region.slug}/${riotIdToSlug(account)}`} className="text-primary hover:underline">
-              Zum Profil
-            </Link>
-          </Notice>
-        </>
-      );
+    // Spectator kennt das Spiel nicht (noch nicht gestartet, Custom/Practice Tool) – Companion-Daten trotzdem zeigen
+    return (
+      <div className="space-y-6">
+        <AutoRefresh seconds={30} />
+        <LiveScoreboard
+          puuid={account.puuid}
+          assets={assets}
+          fallback={
+            <Notice title={`${account.gameName}#${account.tagLine} ist gerade nicht im Spiel`}>
+              Die Seite prüft alle 30 Sekunden erneut.{" "}
+              <Link href={`/player/${region.slug}/${riotIdToSlug(account)}`} className="text-primary hover:underline">
+                Zum Profil
+              </Link>
+            </Notice>
+          }
+        />
+      </div>
+    );
   }
 
   return (
-      <div className="space-y-6">
-        <AutoRefresh seconds={60} />
-        <section className="flex flex-wrap items-end gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-sm text-loss">
-              <RadioIcon className="size-4 animate-pulse" /> Live
-            </p>
-            <h1 className="text-2xl font-bold">
-              {account.gameName}
-              <span className="font-normal text-muted-foreground">#{account.tagLine}</span>
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {queueName(game.gameQueueConfigId)} · {region.label} ·{" "}
-              <GameTimer gameStartTime={game.gameStartTime} />
-            </p>
-          </div>
-          <Bans game={game} data={data} />
-        </section>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          {([100, 200] as const).map((teamId) => (
-            <TeamTable
-              key={teamId}
-              teamId={teamId}
-              players={game.participants.filter((p) => p.teamId === teamId)}
-              data={data}
-              region={region}
-              focusPuuid={account.puuid}
-              rankByPuuid={rankByPuuid}
-            />
-          ))}
+    <div className="space-y-6">
+      <AutoRefresh seconds={60} />
+      <section className="flex flex-wrap items-end gap-4">
+        <div>
+          <p className="flex items-center gap-2 text-sm text-loss">
+            <RadioIcon className="size-4 animate-pulse" /> Live
+          </p>
+          <h1 className="text-2xl font-bold">
+            {account.gameName}
+            <span className="font-normal text-muted-foreground">#{account.tagLine}</span>
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {queueName(game.gameQueueConfigId)} · {region.label} ·{" "}
+            <GameTimer gameStartTime={game.gameStartTime} />
+          </p>
         </div>
+        <Bans game={game} data={data} />
+      </section>
 
-        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-dashed p-5">
-          <PlugZapIcon className="size-6 text-primary" />
-          <div className="flex-1">
-            <p className="font-semibold">Live-Scores &amp; Build-Empfehlungen</p>
-            <p className="text-sm text-muted-foreground">
-              Items, KDA, Gold, Objectives und dynamische Builds gibt es, sobald der Alfons.GG Companion auf dem
-              Spieler-PC läuft.
-            </p>
-          </div>
-          <Link href="/companion" className={buttonVariants({ variant: "outline" })}>
-            Companion einrichten
-          </Link>
-        </div>
+      <LiveScoreboard puuid={account.puuid} assets={assets} fallback={companionCta} />
+
+      <h2 className="text-sm font-semibold text-muted-foreground">Aufstellung & Ränge</h2>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {([100, 200] as const).map((teamId) => (
+          <TeamTable
+            key={teamId}
+            teamId={teamId}
+            players={game.participants.filter((p) => p.teamId === teamId)}
+            data={data}
+            region={region}
+            focusPuuid={account.puuid}
+            rankByPuuid={rankByPuuid}
+          />
+        ))}
       </div>
+    </div>
   );
 }
 

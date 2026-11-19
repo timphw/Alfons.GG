@@ -1,0 +1,706 @@
+{
+  "activePlayer": {
+    "riotId": "Alfons#EUW",
+    "riotIdGameName": "Alfons",
+    "riotIdTagLine": "EUW",
+    "summonerName": "Alfons#EUW",
+    "level": 3,
+    "currentGold": 539.24,
+    "championStats": {
+      "attackDamage": 87.2,
+      "abilityPower": 0,
+      "armor": 40.1,
+      "magicResist": 33.9,
+      "maxHealth": 945,
+      "currentHealth": 945,
+      "attackSpeed": 0.7137500000000001,
+      "moveSpeed": 325,
+      "abilityHaste": 0,
+      "critChance": 0,
+      "lifeSteal": 0
+    }
+  },
+  "allPlayers": [
+    {
+      "championName": "Darius",
+      "rawChampionName": "game_character_displayname_Darius",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1054,
+          "displayName": "Dorans Schild",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "TOP",
+      "respawnTimer": 0,
+      "riotId": "Garnele#EUW",
+      "riotIdGameName": "Garnele",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Garnele#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 10,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Teleportation",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerTeleport_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Lee Sin",
+      "rawChampionName": "game_character_displayname_LeeSin",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1102,
+          "displayName": "Windläufer-Welpe",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "JUNGLE",
+      "respawnTimer": 0,
+      "riotId": "Waldfee#EUW",
+      "riotIdGameName": "Waldfee",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Waldfee#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 8,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Zerschmettern",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerSmite_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Ahri",
+      "rawChampionName": "game_character_displayname_Ahri",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1056,
+          "displayName": "Dorans Ring",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "MIDDLE",
+      "respawnTimer": 0,
+      "riotId": "Mittelfeld#EUW",
+      "riotIdGameName": "Mittelfeld",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Mittelfeld#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 11,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Entzünden",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8112,
+          "displayName": "Elektrisieren"
+        },
+        "primaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        },
+        "secondaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Jinx",
+      "rawChampionName": "game_character_displayname_Jinx",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "BOTTOM",
+      "respawnTimer": 0,
+      "riotId": "Alfons#EUW",
+      "riotIdGameName": "Alfons",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Alfons#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 12,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Heilen",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerHeal_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8008,
+          "displayName": "Tödliches Tempo"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8300,
+          "displayName": "Inspiration"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Thresh",
+      "rawChampionName": "game_character_displayname_Thresh",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 3865,
+          "displayName": "Weltatlas",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 2,
+      "position": "UTILITY",
+      "respawnTimer": 0,
+      "riotId": "Hakenmeister#EUW",
+      "riotIdGameName": "Hakenmeister",
+      "riotIdTagLine": "EUW",
+      "summonerName": "Hakenmeister#EUW",
+      "team": "ORDER",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 1,
+        "wardScore": 4.8
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Erschöpfung",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerExhaust_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8439,
+          "displayName": "Nachbeben"
+        },
+        "primaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        },
+        "secondaryRuneTree": {
+          "id": 8300,
+          "displayName": "Inspiration"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Malphite",
+      "rawChampionName": "game_character_displayname_Malphite",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1054,
+          "displayName": "Dorans Schild",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "TOP",
+      "respawnTimer": 0,
+      "riotId": "Felsbrocken#1234",
+      "riotIdGameName": "Felsbrocken",
+      "riotIdTagLine": "1234",
+      "summonerName": "Felsbrocken#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 10,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Teleportation",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerTeleport_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8437,
+          "displayName": "Griff der Untoten"
+        },
+        "primaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        },
+        "secondaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Warwick",
+      "rawChampionName": "game_character_displayname_Warwick",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1103,
+          "displayName": "Moosstampfer-Welpe",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "JUNGLE",
+      "respawnTimer": 0,
+      "riotId": "Blutdurst#1234",
+      "riotIdGameName": "Blutdurst",
+      "riotIdTagLine": "1234",
+      "summonerName": "Blutdurst#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 8,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Zerschmettern",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerSmite_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8010,
+          "displayName": "Eroberer"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Zed",
+      "rawChampionName": "game_character_displayname_Zed",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "MIDDLE",
+      "respawnTimer": 0,
+      "riotId": "Schattenmann#1234",
+      "riotIdGameName": "Schattenmann",
+      "riotIdTagLine": "1234",
+      "summonerName": "Schattenmann#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 11,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Entzünden",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8112,
+          "displayName": "Elektrisieren"
+        },
+        "primaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        },
+        "secondaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Samira",
+      "rawChampionName": "game_character_displayname_Samira",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 1055,
+          "displayName": "Dorans Klinge",
+          "price": 450,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 3,
+      "position": "BOTTOM",
+      "respawnTimer": 0,
+      "riotId": "Stilwechsel#1234",
+      "riotIdGameName": "Stilwechsel",
+      "riotIdTagLine": "1234",
+      "summonerName": "Stilwechsel#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 12,
+        "wardScore": 1.4
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Barriere",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerBarrier_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8021,
+          "displayName": "Leichtfüßigkeit"
+        },
+        "primaryRuneTree": {
+          "id": 8000,
+          "displayName": "Präzision"
+        },
+        "secondaryRuneTree": {
+          "id": 8100,
+          "displayName": "Dominanz"
+        }
+      },
+      "skinID": 0
+    },
+    {
+      "championName": "Soraka",
+      "rawChampionName": "game_character_displayname_Soraka",
+      "isBot": false,
+      "isDead": false,
+      "items": [
+        {
+          "itemID": 3865,
+          "displayName": "Weltatlas",
+          "price": 400,
+          "count": 1,
+          "slot": 0,
+          "canUse": false,
+          "consumable": false
+        },
+        {
+          "itemID": 3340,
+          "displayName": "Unsichtbares Auge",
+          "price": 0,
+          "count": 1,
+          "slot": 6,
+          "canUse": true,
+          "consumable": false
+        }
+      ],
+      "level": 2,
+      "position": "UTILITY",
+      "respawnTimer": 0,
+      "riotId": "Sternenheil#1234",
+      "riotIdGameName": "Sternenheil",
+      "riotIdTagLine": "1234",
+      "summonerName": "Sternenheil#1234",
+      "team": "CHAOS",
+      "scores": {
+        "kills": 0,
+        "deaths": 0,
+        "assists": 0,
+        "creepScore": 1,
+        "wardScore": 4.8
+      },
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Blitz",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Erschöpfung",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerExhaust_DisplayName"
+        }
+      },
+      "runes": {
+        "keystone": {
+          "id": 8214,
+          "displayName": "Aery herbeirufen"
+        },
+        "primaryRuneTree": {
+          "id": 8200,
+          "displayName": "Zauberei"
+        },
+        "secondaryRuneTree": {
+          "id": 8400,
+          "displayName": "Entschlossenheit"
+        }
+      },
+      "skinID": 0
+    }
+  ],
+  "events": {
+    "Events": [
+      {
+        "EventID": 0,
+        "EventTime": 0,
+        "EventName": "GameStart"
+      },
+      {
+        "EventID": 1,
+        "EventTime": 65,
+        "EventName": "MinionsSpawning"
+      }
+    ]
+  },
+  "gameData": {
+    "gameMode": "CLASSIC",
+    "gameTime": 180,
+    "mapName": "Map11",
+    "mapNumber": 11,
+    "mapTerrain": "Default"
+  }
+}
