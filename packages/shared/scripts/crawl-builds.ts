@@ -1,6 +1,6 @@
 // Statistik-Crawler: High-Elo-Matches (Challenger/Grandmaster) → Item-Builds je Champion & Rolle.
 //
-//   pnpm --filter @alfons/shared crawl [--minutes 50] [--out ../../apps/web/public/data/builds.json]
+//   pnpm --filter @alfons/shared crawl [--minutes 50] [--out <Pfad relativ zu scripts/>]
 //
 // - Liest RIOT_API_KEY aus der Root-.env
 // - Crawlt EUW, KR und NA parallel (eigene Rate-Limits je Region), nur Ranked Solo/Duo (Queue 420)
@@ -14,7 +14,7 @@ import { aggregateBuilds, type CrawledBuild } from "../src/build/stats";
 const { values } = parseArgs({
   options: {
     minutes: { type: "string", default: "50" },
-    out: { type: "string", default: "../../apps/web/public/data/builds.json" },
+    out: { type: "string", default: "../../../apps/web/public/data/builds.json" },
     "aggregate-only": { type: "boolean", default: false },
   },
 });

@@ -42,11 +42,25 @@ export const TTL = {
   activeGame: 15,
   notFound: 60,
   apexLeague: 60 * 60,
+  /** Ränge fremder Spieler (Live-Aufstellung) – ändern sich während eines Spiels nicht */
+  leagueLive: 30 * 60,
+} as const;
+
+/**
+ * Wie lange abgelaufene Einträge noch als Notfall-Fallback taugen (Sekunden).
+ * Ist das Rate-Limit voll oder antwortet Riot mit 429/5xx, liefert der Client
+ * diesen alten Stand, statt zu warten oder einen Fehler zu zeigen.
+ */
+export const STALE = {
+  default: 6 * 60 * 60,
+  activeGame: 2 * 60,
 } as const;
 
 type Host = Platform | RegionalRoute;
 interface CacheEnvelope<T> {
   v: T | null;
+  /** epoch ms, ab dann veraltet (fehlt bei alten Einträgen → gilt als frisch) */
+  exp?: number;
 }
 
 /**
@@ -55,6 +69,7 @@ interface CacheEnvelope<T> {
  * - 429 → Retry-After respektieren (Host pausieren) und erneut versuchen
  * - 5xx/Netzwerkfehler → exponentielles Backoff
  * - Response-Caching (inkl. 404 als `null`) und In-Flight-Deduplizierung
+ * - Stale-Fallback: abgelaufene Einträge werden bei vollem Limit oder 429/5xx weiter ausgeliefert
  */
 export class RiotClient {
   private readonly fetchImpl: typeof fetch;
@@ -84,20 +99,33 @@ export class RiotClient {
   }
 
   /** GET mit Cache. Gibt `null` bei 404 zurück. */
-  async get<T>(host: Host, path: string, ttlSeconds: number): Promise<T | null> {
+  async get<T>(
+    host: Host,
+    path: string,
+    ttlSeconds: number,
+    staleSeconds: number = STALE.default,
+  ): Promise<T | null> {
     const key = `riot:${host}:${path}`;
     const cached = await this.cache.get<CacheEnvelope<T>>(key);
-    if (cached) return cached.v;
+    if (cached && (cached.exp === undefined || cached.exp > this.clock.now())) return cached.v;
 
     const existing = this.inflight.get(key);
     if (existing) return existing as Promise<T | null>;
 
+    // Veralteter Stand vorhanden und Limit gerade voll → nicht anstellen, sofort alten Stand zeigen
+    const stale = cached;
+    if (stale && this.limiter(host).waitTime() > 0) return stale.v;
+
     const p = (async () => {
       try {
-        const value = await this.fetchWithRetry<T>(host, path);
+        const value = await this.fetchWithRetry<T>(host, path, stale ? 0 : this.maxRetries);
         const ttl = value === null ? Math.min(TTL.notFound, ttlSeconds) : ttlSeconds;
-        await this.cache.set<CacheEnvelope<T>>(key, { v: value }, ttl);
+        const keep = value === null ? 0 : staleSeconds;
+        await this.cache.set<CacheEnvelope<T>>(key, { v: value, exp: this.clock.now() + ttl * 1000 }, ttl + keep);
         return value;
+      } catch (err) {
+        if (stale && isTransient(err)) return stale.v;
+        throw err;
       } finally {
         this.inflight.delete(key);
       }
@@ -106,7 +134,7 @@ export class RiotClient {
     return p;
   }
 
-  private async fetchWithRetry<T>(host: Host, path: string): Promise<T | null> {
+  private async fetchWithRetry<T>(host: Host, path: string, maxRetries: number): Promise<T | null> {
     const url = `https://${host}.api.riotgames.com${path}`;
     const limiter = this.limiter(host);
     for (let attempt = 0; ; attempt++) {
@@ -116,7 +144,7 @@ export class RiotClient {
           this.fetchImpl(url, { headers: { "X-Riot-Token": this.opts.apiKey }, cache: "no-store" }),
         );
       } catch (err) {
-        if (attempt >= this.maxRetries) throw err;
+        if (attempt >= maxRetries) throw err;
         await this.clock.sleep(500 * 2 ** attempt);
         continue;
       }
@@ -124,13 +152,14 @@ export class RiotClient {
       if (res.ok) return (await res.json()) as T;
       if (res.status === 404) return null;
 
-      if (res.status === 429 && attempt < this.maxRetries) {
+      if (res.status === 429) {
+        // Pause immer setzen – auch ohne Retry, damit alle weiteren Requests sie respektieren
         const retryAfter = Number(res.headers.get("Retry-After") ?? "1");
         const ms = (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 1) * 1000;
         limiter.pauseUntil(this.clock.now() + ms);
-        continue;
+        if (attempt < maxRetries) continue;
       }
-      if (res.status >= 500 && attempt < this.maxRetries) {
+      if (res.status >= 500 && attempt < maxRetries) {
         await this.clock.sleep(500 * 2 ** attempt);
         continue;
       }
@@ -157,8 +186,8 @@ export class RiotClient {
     return this.get<SummonerDto>(platform, `/lol/summoner/v4/summoners/by-puuid/${puuid}`, TTL.summoner);
   }
 
-  getLeagueEntries(platform: Platform, puuid: string) {
-    return this.get<LeagueEntryDto[]>(platform, `/lol/league/v4/entries/by-puuid/${puuid}`, TTL.league);
+  getLeagueEntries(platform: Platform, puuid: string, ttlSeconds: number = TTL.league) {
+    return this.get<LeagueEntryDto[]>(platform, `/lol/league/v4/entries/by-puuid/${puuid}`, ttlSeconds);
   }
 
   getMatchIds(
@@ -185,6 +214,7 @@ export class RiotClient {
       platform,
       `/lol/spectator/v5/active-games/by-summoner/${puuid}`,
       TTL.activeGame,
+      STALE.activeGame,
     );
   }
 
@@ -195,4 +225,10 @@ export class RiotClient {
   ) {
     return this.get<LeagueListDto>(platform, `/lol/league/v4/${tier}leagues/by-queue/${queue}`, TTL.apexLeague);
   }
+}
+
+/** 429, 5xx und Netzwerkfehler – nicht aber 401/403 (Key ungültig) o.ä. */
+function isTransient(err: unknown): boolean {
+  if (err instanceof RiotApiError) return err.status === 429 || err.status >= 500;
+  return true;
 }
