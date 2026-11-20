@@ -31,7 +31,7 @@ export class TerminalCoach {
     lines.push(`\n── Coach ${fmtTime(s.gameTime)} ${"─".repeat(40)}`);
     if (c.now) lines.push(`  ▶ JETZT: ${c.now.text}`);
     if (c.lane) {
-      const v = { ahead: "Vorteil", even: "Ausgeglichen", behind: "Nachteil" }[c.lane.verdict];
+      const v = c.lane.verdictText;
       lines.push(`  ⚔ ${c.lane.role}: ${v}${c.lane.reasons.length ? ` – ${c.lane.reasons.slice(0, 2).join(" · ")}` : ""}`);
     }
     if (c.jungle?.gankTarget) lines.push(`  🎯 Gank-Ziel: ${c.jungle.gankTarget.lane} – ${c.jungle.gankTarget.reason}`);

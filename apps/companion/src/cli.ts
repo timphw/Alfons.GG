@@ -2,7 +2,8 @@ import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { coach, initJungleState, updateJungle, type CoachResult, type LiveSnapshot } from "@alfons/shared";
-import { loadConfig, saveConfig, DEFAULT_SERVER } from "./config";
+import { loadConfig, DEFAULT_SERVER } from "./config";
+import { browserPair, exchangePairingCode } from "./browser-pair";
 import { LiveSource, ReplaySource, SimulatorSource, type DataSource } from "./sources";
 import { GameTracker } from "./tracker";
 import { Uploader } from "./uploader";
@@ -13,7 +14,8 @@ import { OverlayServer, launchIngameOverlay, openOverlayWindow } from "./overlay
 const HELP = `Alfons.GG Companion
 
 Befehle:
-  pair <CODE> [--server URL]   Mit der Website koppeln (Code von /companion)
+  pair                         Mit der Website verbinden (öffnet den Browser)
+  pair <CODE> [--server URL]   Manuell mit Code von /companion verbinden
   run [Optionen]               Live-Daten lesen und an die Website senden
   status                       Gespeicherte Konfiguration anzeigen
   overlay [--browser]          Ingame-Overlay öffnen (Companion muss laufen); --browser = Edge-Fenster
@@ -63,7 +65,7 @@ async function main() {
     console.log(HELP);
     return;
   }
-  if (command === "pair") return pair(rest[0], values.server);
+  if (command === "pair") return pair(rest[0], values.server, Number(values["overlay-port"]));
   if (command === "status") return status();
   if (command === "overlay") {
     const url = `http://127.0.0.1:${Number(values["overlay-port"])}/overlay`;
@@ -92,32 +94,31 @@ async function main() {
   process.exitCode = 1;
 }
 
-async function pair(code: string | undefined, serverArg?: string) {
-  if (!code) {
-    console.error("Pairing-Code fehlt: companion pair <CODE>");
-    process.exitCode = 1;
-    return;
-  }
+/** `pair` ohne Code = Koppeln per Browser; `pair <CODE>` = manuell (Code von /companion). */
+async function pair(code: string | undefined, serverArg: string | undefined, port: number) {
   const server = serverArg ?? loadConfig().server ?? DEFAULT_SERVER;
-  const res = await fetch(new URL("/api/companion/pair", server), {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ code }),
-  }).catch((err: Error) => {
-    console.error(`Server ${server} nicht erreichbar: ${err.message}`);
-    return null;
-  });
-  if (!res) return void (process.exitCode = 1);
-  const body = (await res.json().catch(() => ({}))) as { token?: string; riotId?: string; region?: string; error?: string };
-  if (!res.ok || !body.token) {
-    console.error(`Pairing fehlgeschlagen: ${body.error ?? res.status}`);
+  let result;
+  if (code) {
+    result = await exchangePairingCode(server, code);
+  } else {
+    const local = new OverlayServer(port);
+    try {
+      await local.listen();
+    } catch {
+      console.error(`Port ${port} ist belegt – läuft der Companion schon? Dann dort neu verbinden oder ihn beenden.`);
+      process.exitCode = 1;
+      return;
+    }
+    result = await browserPair(server, local);
+    local.close();
+  }
+  if (!result.ok) {
+    console.error(`Verbinden fehlgeschlagen: ${result.error}`);
     process.exitCode = 1;
     return;
   }
-  const file = saveConfig({ server, token: body.token, riotId: body.riotId, region: body.region });
-  console.log(`✓ Gekoppelt mit ${body.riotId} (${body.region?.toUpperCase()}) auf ${server}`);
-  console.log(`  Konfiguration: ${file}`);
-  console.log(`  Starten mit:   Alfons-Companion-Starten.cmd (oder: node alfons-companion.mjs run)`);
+  console.log(`✓ Verbunden mit ${result.riotId} (${result.region?.toUpperCase()}) auf ${server}`);
+  console.log(`  Starten mit: „Alfons.GG starten.cmd“ (oder: node alfons-companion.mjs run)`);
 }
 
 function status() {
@@ -144,13 +145,8 @@ interface RunOptions {
 }
 
 async function run(opts: RunOptions) {
-  const cfg = loadConfig();
+  let cfg = loadConfig();
   const server = opts.server ?? cfg.server!;
-  if (!cfg.token && !opts.dryRun) {
-    console.error("Nicht gekoppelt. Öffne /companion auf der Website und führe den angezeigten pair-Befehl aus.");
-    process.exitCode = 1;
-    return;
-  }
 
   const source: DataSource = opts.replay
     ? new ReplaySource(opts.replay, opts.speed)
@@ -160,7 +156,6 @@ async function run(opts: RunOptions) {
           activeIndex: opts.role ? Math.max(0, ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"].indexOf(opts.role.toUpperCase())) : undefined,
         })
       : new LiveSource();
-  const uploader = cfg.token ? new Uploader(server, cfg.token) : null;
   const tracker = new GameTracker();
   let recordFile: string | null = null;
 
@@ -190,6 +185,25 @@ async function run(opts: RunOptions) {
       overlay = null;
     }
   }
+
+  // Noch nicht gekoppelt → per Browser verbinden (ohne Code-Kopieren)
+  if (!cfg.token && !opts.dryRun) {
+    let local = overlay;
+    if (!local) {
+      local = new OverlayServer(opts.overlayPort === 2998 ? 2997 : opts.overlayPort + 1);
+      await local.listen().catch(() => (local = null));
+    }
+    const result = local ? await browserPair(server, local) : { ok: false, error: "Kein freier lokaler Port" };
+    if (local && local !== overlay) local.close();
+    if (!result.ok) {
+      console.error(`✗ Nicht verbunden (${result.error}). Live-Daten werden nicht an die Website gesendet – Overlay & Tipps laufen trotzdem.`);
+    } else {
+      console.log(`✓ Verbunden mit ${result.riotId}.`);
+      cfg = loadConfig();
+    }
+  }
+  const uploader = cfg.token ? new Uploader(server, cfg.token) : null;
+
   const analyze = (s: LiveSnapshot): CoachResult | null => {
     if (!buildData) return null;
     try {

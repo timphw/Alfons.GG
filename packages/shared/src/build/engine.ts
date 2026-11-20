@@ -212,12 +212,17 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
   // Beim ersten fertigen Item gelten Situations-Regeln nur gedämpft (Rush-Items sind selten richtig)
   const situ = ownedLegendaries === 0 ? 0.4 : 1;
 
+  // Champions ohne Mana (Garen, Zed, Renekton, …) bekommen nie Mana-Items
+  const usesMana = !champ.partype || /^mana$/i.test(champ.partype);
   const candidates: Candidate[] = [];
   for (const [id, item] of Object.entries(data.items)) {
     if (owned.has(id) || blocked.has(id)) continue;
     if (!isLegendary(id, item)) continue;
-    const styleScore = baseScore(item, weights);
+    if (!usesMana && (item.tags.includes("Mana") || item.tags.includes("ManaRegen"))) continue;
     const st = stats?.items[id];
+    // Falsche Schadensart ausschließen – außer High-Elo-Spieler bauen es nachweislich
+    if (!st && !compatibleDamage(item, style, damage)) continue;
+    const styleScore = baseScore(item, weights);
     const coreIdx = stats?.core.indexOf(id) ?? -1;
     const reasons: string[] = [];
     let score: number;
@@ -373,6 +378,17 @@ function chooseBoots(
   const item = data.items[id];
   if (!item || !isTier2Boots(id, item)) return null;
   return { id, item, score: 0, reasons: [reason] };
+}
+
+/** Reine AP-Items nicht für AD-Champions und umgekehrt (Supports/Tanks ausgenommen). */
+function compatibleDamage(item: DDItem, style: Style, damage: "AD" | "AP"): boolean {
+  const t = new Set(item.tags);
+  const ad = t.has("Damage") || t.has("CriticalStrike");
+  const ap = t.has("SpellDamage");
+  if (style === "tank" || style === "support-tank" || style === "enchanter") return true;
+  if (damage === "AD" && ap && !ad) return false;
+  if (damage === "AP" && ad && !ap) return false;
+  return true;
 }
 
 function defaultReason(style: Style): string {

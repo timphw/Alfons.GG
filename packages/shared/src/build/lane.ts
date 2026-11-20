@@ -30,9 +30,16 @@ export interface LaneInfo {
   me: LaneSide[];
   enemy: LaneSide[];
   verdict: LaneVerdict;
+  /** Klartext aus deiner Sicht, z.B. „Du bist im Vorteil“ */
+  verdictText: string;
   /** > 0 = Vorteil für dich */
   score: number;
+  /** Alle Gründe aus deiner Sicht formuliert */
   reasons: string[];
+  /** Deine Vorteile (werden auf deiner Seite angezeigt) */
+  pros: string[];
+  /** Vorteile des Gegners (werden auf seiner Seite angezeigt) */
+  cons: string[];
   advice: string;
 }
 
@@ -86,9 +93,13 @@ export function analyzeLaneFor(s: LiveSnapshot, player: LivePlayer, data: BuildD
 
   let score = 0;
   const reasons: string[] = [];
-  const add = (points: number, text: string) => {
+  const pros: string[] = [];
+  const cons: string[] = [];
+  /** text = aus deiner Sicht; sideText = kurz, steht auf der Seite dessen, der den Vorteil hat */
+  const add = (points: number, text: string, sideText: string) => {
     score += points;
     reasons.push(text);
+    (points >= 0 ? pros : cons).push(sideText);
   };
 
   // Level / Ultimate
@@ -96,46 +107,58 @@ export function analyzeLaneFor(s: LiveSnapshot, player: LivePlayer, data: BuildD
   const enLvl = avg(enemy, (p) => p.level);
   const myUlt = me.every((p) => p.level >= 6);
   const enUlt = enemy.every((p) => p.level >= 6);
-  if (enUlt && !myUlt) add(-3, "Gegner hat Ult (Level 6), du noch nicht");
-  else if (myUlt && !enUlt) add(3, "Du hast Ult (Level 6), der Gegner noch nicht");
-  else if (minutes < 3.5 && enLvl >= 2 && myLvl < 2) add(-2, "Gegner ist zuerst Level 2");
-  else if (minutes < 3.5 && myLvl >= 2 && enLvl < 2) add(2, "Du bist zuerst Level 2 – Trade-Fenster!");
-  else if (Math.abs(myLvl - enLvl) >= 1) add(Math.sign(myLvl - enLvl) * Math.min(2, Math.abs(myLvl - enLvl)), myLvl > enLvl ? `Level-Vorteil (${Math.round(myLvl)} vs ${Math.round(enLvl)})` : `Level-Rückstand (${Math.round(myLvl)} vs ${Math.round(enLvl)})`);
+  if (enUlt && !myUlt) add(-3, "Gegner hat Ult (Level 6), du noch nicht", "Ult bereit (Level 6)");
+  else if (myUlt && !enUlt) add(3, "Du hast Ult (Level 6), der Gegner noch nicht", "Ult bereit (Level 6)");
+  else if (minutes < 3.5 && enLvl >= 2 && myLvl < 2) add(-2, "Gegner ist zuerst Level 2", "Zuerst Level 2");
+  else if (minutes < 3.5 && myLvl >= 2 && enLvl < 2) add(2, "Du bist zuerst Level 2 – Trade-Fenster!", "Zuerst Level 2 – jetzt traden!");
+  else if (Math.abs(myLvl - enLvl) >= 1) {
+    const d = Math.round(Math.abs(myLvl - enLvl));
+    add(
+      Math.sign(myLvl - enLvl) * Math.min(2, Math.abs(myLvl - enLvl)),
+      myLvl > enLvl ? `Level-Vorteil (${Math.round(myLvl)} vs ${Math.round(enLvl)})` : `Level-Rückstand (${Math.round(myLvl)} vs ${Math.round(enLvl)})`,
+      `+${d} Level`,
+    );
+  }
 
   // Items
   const goldDiff = sum(me, (p) => p.itemGold) - sum(enemy, (p) => p.itemGold);
   if (Math.abs(goldDiff) >= 300) {
-    add(Math.max(-3, Math.min(3, goldDiff / 400)), goldDiff > 0 ? `${fmtGold(goldDiff)} g mehr Items als ${duo ? "die Gegner" : "dein Gegner"}` : `Gegner hat ${fmtGold(goldDiff)} g mehr Items`);
+    add(
+      Math.max(-3, Math.min(3, goldDiff / 400)),
+      goldDiff > 0 ? `${fmtGold(goldDiff)} g mehr Items als ${duo ? "die Gegner" : "dein Gegner"}` : `Gegner hat ${fmtGold(goldDiff)} g mehr Items`,
+      `+${fmtGold(goldDiff)} g Items`,
+    );
   }
 
   // CS
   if (minutes >= 4 && role !== "UTILITY" && role !== "JUNGLE") {
     const csDiff = sum(me.filter((p) => p.cs > 20 || !duo), (p) => p.cs) - sum(enemy.filter((p) => p.cs > 20 || !duo), (p) => p.cs);
-    if (Math.abs(csDiff) >= 10) add(Math.max(-1.5, Math.min(1.5, csDiff / 20)), csDiff > 0 ? `+${csDiff} CS` : `${csDiff} CS`);
+    if (Math.abs(csDiff) >= 10) add(Math.max(-1.5, Math.min(1.5, csDiff / 20)), csDiff > 0 ? `+${csDiff} CS` : `${csDiff} CS`, `+${Math.abs(csDiff)} CS`);
   }
 
   // Summoner Spells (welche – nicht deren Cooldowns)
   for (const [spell, w] of [["SummonerDot", 1.5], ["SummonerExhaust", 1]] as const) {
     const mine = has(me, spell);
     const theirs = has(enemy, spell);
-    if (theirs && !mine) add(-w, `Gegner hat ${SPELL_NAME[spell]}${spell === "SummonerDot" ? " (Kill-Druck)" : ""}, du nicht`);
-    else if (mine && !theirs) add(w, `Du hast ${SPELL_NAME[spell]}, der Gegner nicht`);
+    const label = `${SPELL_NAME[spell]}${spell === "SummonerDot" ? " (Kill-Druck)" : ""}`;
+    if (theirs && !mine) add(-w, `Gegner hat ${label}, du nicht`, label);
+    else if (mine && !theirs) add(w, `Du hast ${SPELL_NAME[spell]}, der Gegner nicht`, label);
   }
   if (!duo && me[0] && enemy[0]) {
     const flashMe = me[0].spells.includes("SummonerFlash");
     const flashEn = enemy[0].spells.includes("SummonerFlash");
-    if (flashEn && !flashMe) add(-0.5, "Gegner hat Blitz, du nicht – weniger Fluchtmöglichkeit");
+    if (flashEn && !flashMe) add(-0.5, "Gegner hat Blitz, du nicht – weniger Fluchtmöglichkeit", "Blitz (du nicht)");
   }
 
   // Nah- vs. Fernkampf (Top/Mid)
   if (!duo && me[0] && enemy[0] && (role === "TOP" || role === "MIDDLE")) {
-    if (enemy[0].ranged && !me[0].ranged) add(-1, `${enemy[0].championName} ist Fernkämpfer – er kann dich risikolos pieksen`);
-    else if (me[0].ranged && !enemy[0].ranged) add(1, `Du bist Fernkämpfer gegen ${enemy[0].championName} (Nahkampf) – pieks ihn beim Farmen`);
+    if (enemy[0].ranged && !me[0].ranged) add(-1, `${enemy[0].championName} ist Fernkämpfer – er kann dich risikolos pieksen`, "Fernkampf – pieksen");
+    else if (me[0].ranged && !enemy[0].ranged) add(1, `Du bist Fernkämpfer gegen ${enemy[0].championName} (Nahkampf) – pieks ihn beim Farmen`, "Fernkampf – pieks ihn");
   }
 
   // Kills in der Lane
   const killDiff = sum(me, (p) => p.kills - p.deaths) - sum(enemy, (p) => p.kills - p.deaths);
-  if (Math.abs(killDiff) >= 2) add(Math.max(-2, Math.min(2, killDiff / 2)), killDiff > 0 ? "Mehr Kills als der Gegner" : "Gegner hat dich schon öfter getötet");
+  if (Math.abs(killDiff) >= 2) add(Math.max(-2, Math.min(2, killDiff / 2)), killDiff > 0 ? "Mehr Kills als der Gegner" : "Gegner hat dich schon öfter getötet", "Führt bei Kills");
 
   score = Math.round(score * 10) / 10;
   const verdict: LaneVerdict = score >= 2 ? "ahead" : score <= -2 ? "behind" : "even";
@@ -167,7 +190,19 @@ export function analyzeLaneFor(s: LiveSnapshot, player: LivePlayer, data: BuildD
     advice = "Ausgeglichen – kurze Trades, wenn er farmt; Welle kontrollieren und auf Jungler-Hilfe achten.";
   }
 
-  return { role: ROLE_LABEL[role] ?? role, me, enemy, verdict, score, reasons: reasons.slice(0, 4), advice };
+  const verdictText = verdict === "ahead" ? "Du bist im Vorteil" : verdict === "behind" ? "Du bist im Nachteil" : "Ausgeglichen";
+  return {
+    role: ROLE_LABEL[role] ?? role,
+    me,
+    enemy,
+    verdict,
+    verdictText,
+    score,
+    reasons: reasons.slice(0, 4),
+    pros: pros.slice(0, 3),
+    cons: cons.slice(0, 3),
+    advice,
+  };
 }
 
 export function analyzeLane(s: LiveSnapshot, data: BuildData): LaneInfo | null {

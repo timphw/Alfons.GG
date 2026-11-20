@@ -152,3 +152,50 @@ describe("Statistik-Basis", () => {
     expect(r.items.find((i) => i.id === "3006")).toBeDefined();
   });
 });
+
+describe("Plausibilität der Items", () => {
+  const base = { kills: 0, deaths: 0, assists: 0, level: 9 };
+  it.each(["Garen", "Zed", "Renekton", "Katarina", "Riven"])("%s (kein Mana) bekommt keine Mana-Items", (champ) => {
+    const r = recommendBuild(
+      { me: { champion: champ, items: [], ...base, position: "TOP" }, gold: 0, gameTime: 600, enemies: [{ champion: "Ahri", items: [], ...base }], teamGoldDiff: 0 },
+      data,
+    )!;
+    for (const it of r.items) {
+      const tags = data.items[it.id]!.tags;
+      expect(tags.includes("Mana") || tags.includes("ManaRegen"), `${champ}: ${it.name}`).toBe(false);
+    }
+  });
+
+  it("AD-Kämpfer bekommt keine reinen AP-Items, Magier keine reinen AD-Items", () => {
+    const opts = (champion: string) => ({ me: { champion, items: [], ...base, position: "MIDDLE" }, gold: 0, gameTime: 600, enemies: [], teamGoldDiff: 0 });
+    for (const it of recommendBuild(opts("Garen"), data)!.items) {
+      const t = data.items[it.id]!.tags;
+      expect(t.includes("SpellDamage") && !t.includes("Damage")).toBe(false);
+    }
+    for (const it of recommendBuild(opts("Lux"), data)!.items) {
+      const t = data.items[it.id]!.tags;
+      expect((t.includes("Damage") || t.includes("CriticalStrike")) && !t.includes("SpellDamage")).toBe(false);
+    }
+  });
+});
+
+describe("Lane-Hinweise stehen auf der richtigen Seite", () => {
+  it("eigene Vorteile → pros, gegnerische → cons, Urteil aus deiner Sicht", () => {
+    const s = playAs(snap(), "Darius");
+    const me = find(s, "Darius");
+    const en = find(s, "Malphite");
+    Object.assign(me, { level: 9, kills: 0, deaths: 0, cs: 100, itemGold: 3000, spells: ["SummonerFlash", "SummonerDot"] });
+    Object.assign(en, { level: 9, kills: 0, deaths: 0, cs: 100, itemGold: 2000, spells: ["SummonerFlash", "SummonerTeleport"] });
+    const lane = analyzeLane(s, data)!;
+    expect(lane.verdictText).toBe("Du bist im Vorteil");
+    expect(lane.pros.join(" ")).toMatch(/Entzünden/);
+    expect(lane.pros.join(" ")).toMatch(/Items/);
+    expect(lane.cons).toEqual([]);
+    en.spells = ["SummonerFlash", "SummonerDot"];
+    me.spells = ["SummonerFlash", "SummonerTeleport"];
+    me.itemGold = 2000;
+    const lane2 = analyzeLane(s, data)!;
+    expect(lane2.cons.join(" ")).toMatch(/Entzünden/);
+    expect(lane2.pros.join(" ")).not.toMatch(/Entzünden/);
+  });
+});

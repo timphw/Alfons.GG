@@ -11,87 +11,89 @@ export default function CompanionPage() {
       <div>
         <h1 className="text-3xl font-bold">Alfons.GG Companion</h1>
         <p className="mt-2 text-muted-foreground">
-          Der Companion läuft auf dem Spieler-PC, liest die lokale Live Client Data API des laufenden Spiels und
-          überträgt Items, KDA, CS, Gold und Objectives live auf die Live-Seite.
+          Läuft auf deinem PC, liest die Live-Daten deines Spiels und zeigt im <b>Ingame-Overlay</b> den nächsten Kauf,
+          dein Lane-Duell, Jungle-Infos, Objective-Timer und Tipps, was als Nächstes zu tun ist.
         </p>
       </div>
 
+      <div className="rounded-xl border bg-card p-6 text-center">
+        <a href="/downloads/Alfons-GG-Companion.zip" download className={buttonVariants({ size: "lg" })}>
+          <DownloadIcon /> Companion herunterladen (ZIP, Windows)
+        </a>
+        <p className="mt-2 text-xs text-muted-foreground">ca. 0,9 MB · beim ersten Overlay-Start werden einmalig ~110 MB geladen</p>
+      </div>
+
       <ol className="space-y-6">
-        <Step n={1} title="Node.js installieren (einmalig)">
+        <Step n={1} title="Entpacken">
           <p>
-            Lade die LTS-Version von{" "}
-            <a href="https://nodejs.org" target="_blank" rel="noreferrer" className="text-primary hover:underline">
-              nodejs.org
-            </a>{" "}
-            herunter und installiere sie mit den Standardeinstellungen.
+            ZIP öffnen und den Ordner <b>Alfons.GG</b> z.B. nach <code>Dokumente</code> ziehen.
           </p>
         </Step>
-
-        <Step n={2} title="Companion herunterladen">
-          <p>Alle drei Dateien in denselben Ordner speichern, z.B. <code>Dokumente\Alfons.GG</code>.</p>
-          <div className="flex flex-wrap gap-2">
-            <a href="/downloads/alfons-companion.mjs" download className={buttonVariants()}>
-              <DownloadIcon /> alfons-companion.mjs
-            </a>
-            <a href="/downloads/alfons-overlay.cjs" download className={buttonVariants({ variant: "outline" })}>
-              <DownloadIcon /> alfons-overlay.cjs
-            </a>
-            <a href="/downloads/Alfons-Companion-Starten.cmd" download className={buttonVariants({ variant: "outline" })}>
-              <DownloadIcon /> Alfons-Companion-Starten.cmd
-            </a>
-          </div>
-        </Step>
-
-        <Step n={3} title="Mit deinem Account koppeln (einmalig)">
+        <Step n={2} title="Doppelklick auf „Alfons.GG starten“">
           <p>
-            Code erzeugen, dann im Download-Ordner ein Terminal öffnen (im Explorer in die Adressleiste{" "}
-            <code>cmd</code> tippen) und den angezeigten Befehl ausführen.
-          </p>
-          <PairingForm />
-        </Step>
-
-        <Step n={4} title="Vor jedem Spiel starten">
-          <p>
-            Doppelklick auf <b>Alfons-Companion-Starten.cmd</b>. Das Fenster einfach offen lassen: Spielstart und -ende
-            werden automatisch erkannt. Im Fenster erscheinen Coach-Tipps, und das Ingame-Overlay öffnet sich.
+            Fehlt Node.js, wird es automatisch installiert – danach den Starter einfach nochmal öffnen. Windows fragt beim
+            ersten Mal evtl. nach, ob die Datei ausgeführt werden darf („Weitere Informationen → Trotzdem ausführen“).
           </p>
         </Step>
-
-        <Step n={5} title="Ingame-Overlay (ein Bildschirm)">
+        <Step n={3} title="Im Browser auf „Verbinden“ klicken (nur beim ersten Mal)">
           <p>
-            Ein transparentes Fenster über dem Spiel zeigt Gold, nächsten Kauf, Objective-Timer und Tipps. Klicks gehen
-            durch ins Spiel. Beim ersten Start wird die Overlay-Laufzeit (Electron, ~110 MB) einmalig geladen.
+            Der Browser öffnet sich automatisch. Riot ID eingeben, <b>Verbinden</b> klicken – fertig. Kein Code-Kopieren
+            mehr.
           </p>
+        </Step>
+        <Step n={4} title="Spielen">
           <ul className="list-inside list-disc space-y-1">
             <li>
-              In League: <b>Einstellungen → Video → Fenstermodus: „Randlos“</b>. Bei echtem Vollbild ist kein Overlay
+              In League: <b>Einstellungen → Video → Fenstermodus „Randlos“</b> – bei echtem Vollbild ist kein Overlay
               sichtbar.
             </li>
             <li>
-              <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd>: Overlay verschieben und Größe ändern (nochmal drücken =
-              fertig, die Position wird gespeichert)
-            </li>
-            <li>
-              <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd>: ein-/ausblenden · <kbd>Strg</kbd>+<kbd>Shift</kbd>+
-              <kbd>Q</kbd>: Overlay beenden
+              <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> Overlay verschieben/Größe ändern (nochmal = fertig, Position
+              wird gespeichert) · <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> ein/aus · <kbd>Strg</kbd>+
+              <kbd>Shift</kbd>+<kbd>Q</kbd> beenden
             </li>
           </ul>
-          <p>Overlay nachträglich öffnen (Companion muss laufen):</p>
-          <CopyLine text="node alfons-companion.mjs overlay" />
-        </Step>
-
-        <Step n={6} title="Ohne Spiel testen">
-          <p>Simuliert ein komplettes Spiel (5× beschleunigt) inklusive Overlay:</p>
-          <CopyLine text="node alfons-companion.mjs run --mock --speed 5 --open-overlay" />
         </Step>
       </ol>
+
+      <section className="space-y-3 rounded-xl border bg-card p-5 text-sm text-muted-foreground">
+        <h2 className="text-base font-semibold text-foreground">Wie entstehen die Empfehlungen?</h2>
+        <p>
+          <b className="text-foreground">High-Elo-Builds:</b> Wir werten Ranked-Spiele von Challenger- und
+          Grandmaster-Spielern (EUW, KR, NA) des aktuellen Patches aus – welche Items sie für deinen Champion auf deiner
+          Rolle in welcher Reihenfolge kaufen. Im Overlay steht dann z.B. „High-Elo · 40 Spiele“.
+        </p>
+        <p>
+          <b className="text-foreground">Anpassung an dein Spiel:</b> Darauf reagieren Regeln auf das Gegnerteam – viel
+          magischer/physischer Schaden → Resistenzen, mehrere Heiler → Klaffende Wunden, Tanks → Durchdringung,
+          gefütterte Assassinen → Schutz-Items. Bei deinem ersten Item wirken sie nur abgeschwächt.
+        </p>
+        <p>
+          <b className="text-foreground">„Schätzung – keine High-Elo-Daten“:</b> Für seltene Champions gibt es noch nicht
+          genug Spiele. Dann schätzen wir nach Champion-Typ (z.B. Kämpfer → Schaden + Leben), nie Mana-Items für
+          Champions ohne Mana und nie AP-Items für AD-Champions.
+        </p>
+      </section>
+
+      <details className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
+        <summary className="cursor-pointer font-semibold text-foreground">Für Fortgeschrittene</summary>
+        <div className="mt-4 space-y-4">
+          <p>Manuell mit Code verbinden (z.B. wenn sich der Browser nicht öffnet):</p>
+          <PairingForm />
+          <p>Ohne Spiel testen (simuliertes Spiel, 5× beschleunigt, als Jungler):</p>
+          <CopyLine text="node alfons-companion.mjs run --mock --speed 5 --role JUNGLE --open-overlay" />
+          <p>Neu verbinden (anderer Account):</p>
+          <CopyLine text="node alfons-companion.mjs pair" />
+        </div>
+      </details>
 
       <div className="flex gap-3 rounded-xl border bg-card p-4 text-sm text-muted-foreground">
         <ShieldCheckIcon className="size-5 shrink-0 text-win" />
         <p>
           Der Companion greift nicht in das Spiel ein. Er liest ausschließlich die offizielle lokale Schnittstelle
           <code className="mx-1">127.0.0.1:2999</code>, die Riot für genau solche Tools bereitstellt. Das sind nur Daten,
-          die du im Spiel ohnehin siehst, und er verträgt sich mit Vanguard.
+          die du im Spiel ohnehin siehst, und er verträgt sich mit Vanguard. Gegnerische Jungle-Camps oder Abklingzeiten werden
+          nicht getrackt.
         </p>
       </div>
     </div>

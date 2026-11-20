@@ -21,6 +21,7 @@ export interface OverlayState {
  */
 export class OverlayServer {
   private clients = new Set<http.ServerResponse>();
+  private pairHandler: ((q: URLSearchParams) => Promise<string>) | null = null;
   private state: OverlayState = { status: "waiting" };
   private server: http.Server;
 
@@ -36,6 +37,17 @@ export class OverlayServer {
         res.write(`retry: 1000\n\ndata: ${JSON.stringify(this.state)}\n\n`);
         this.clients.add(res);
         req.on("close", () => this.clients.delete(res));
+        return;
+      }
+      if (url.pathname === "/pair") {
+        if (!this.pairHandler) {
+          res.writeHead(409, { "content-type": "text/plain; charset=utf-8" }).end("Kein Verbindungsvorgang aktiv.");
+          return;
+        }
+        void this.pairHandler(url.searchParams).then((html) => {
+          res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+          res.end(html);
+        });
         return;
       }
       if (url.pathname === "/" || url.pathname === "/overlay") {
@@ -55,6 +67,15 @@ export class OverlayServer {
       this.server.once("error", reject);
       this.server.listen(this.port, "127.0.0.1", () => resolve());
     });
+  }
+
+  /** Aktiviert den einmaligen /pair-Endpunkt fürs Koppeln per Browser */
+  setPairHandler(fn: ((q: URLSearchParams) => Promise<string>) | null) {
+    this.pairHandler = fn;
+  }
+
+  close() {
+    this.server.close();
   }
 
   get url() {
@@ -231,8 +252,13 @@ const OVERLAY_HTML = /* html */ `<!doctype html>
   .obj.soon{border-color:var(--red);color:var(--red)}.obj.up{border-color:var(--gold);color:var(--gold)}
   .wait{color:var(--mut);text-align:center;padding:24px 0}
   .ahead{color:var(--green)}.behind{color:var(--red)}.even{color:var(--mut)}
-  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
-  .duel .r{justify-content:flex-end;text-align:right}
+  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:6px}
+  .duel .r,.duel .r .row{justify-content:flex-end;text-align:right}
+  .who{font-size:10px;letter-spacing:.08em;color:var(--mut);margin-bottom:3px;font-weight:700}
+  .side:not(.r) .who{color:var(--gold)}
+  .vs{align-self:center}
+  .pc{list-style:none;padding:0;margin-top:4px;font-size:11.5px;line-height:1.3}
+  .verdict{font-weight:700;font-size:14px;margin-bottom:6px}
   .stat{font-size:11.5px;color:var(--mut);line-height:1.25}.stat b{color:var(--fg)}
   .vs{color:var(--mut);font-size:11px}
   .reasons{margin-top:5px;padding-left:14px;font-size:11.5px;color:var(--mut)}
@@ -256,7 +282,7 @@ if (new URLSearchParams(location.search).get("mode") === "overlay") document.bod
 const DD = "https://ddragon.leagueoflegends.com/cdn/";
 const fmt = s => { s = Math.max(0, Math.round(s)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const VERDICT = { ahead: "Vorteil", even: "Ausgeglichen", behind: "Nachteil" };
+const VERDICT = { ahead: "Du bist im Vorteil", even: "Ausgeglichen", behind: "Du bist im Nachteil" };
 let st = null, recv = 0;
 const champImg = (v, id, cls) => '<img class="'+(cls||"ch")+'" src="'+DD+v+'/img/champion/'+esc(id)+'.png">';
 const spellImg = (v, key) => key ? '<img class="xs" title="'+esc(key.replace("Summoner",""))+'" src="'+DD+v+'/img/spell/'+esc(key)+'.png">' : "";
@@ -296,17 +322,21 @@ function render(){
     h += '</div>';
   } else if (v && c.lane) {
     const l = c.lane;
-    h += '<div class="card"><div class="lbl"><span>'+esc(l.role)+'</span><span class="'+l.verdict+'">'+VERDICT[l.verdict]+'</span></div>'+
-      '<div class="duel"><div>'+l.me.map(p=>laneSide(v,p,false)).join("")+'</div><span class="vs">vs</span><div>'+l.enemy.map(p=>laneSide(v,p,true)).join("")+'</div></div>';
-    if (l.reasons.length) h += '<ul class="reasons">'+l.reasons.slice(0,3).map(r=>'<li>'+esc(r)+'</li>').join("")+'</ul>';
-    h += '</div>';
+    // Eigene Vorteile stehen unter DIR (links), die des Gegners unter IHM (rechts)
+    const col = (who, players, list, right, cls, mark) => '<div class="side'+(right?" r":"")+'"><div class="who">'+who+'</div>'+
+      players.map(p=>laneSide(v,p,right)).join("")+
+      (list.length?'<ul class="pc '+cls+'">'+list.map(x=>'<li>'+mark+' '+esc(x)+'</li>').join("")+'</ul>':'')+'</div>';
+    h += '<div class="card"><div class="lbl"><span>'+esc(l.role)+'</span></div>'+
+      '<div class="verdict '+l.verdict+'">'+esc(l.verdictText || VERDICT[l.verdict])+'</div>'+
+      '<div class="duel">'+col("DU", l.me, l.pros||[], false, "ahead", "✓")+'<span class="vs">vs</span>'+col("GEGNER", l.enemy, l.cons||[], true, "behind", "!")+'</div>'+
+      '<div class="mut" style="margin-top:6px">→ '+esc(l.advice)+'</div></div>';
   }
 
   // Nächster Kauf
   const b = c.build, plan = b && b.nextPurchase;
   if (b && b.nextItem && plan && v) {
     const pct = Math.min(100, (plan.remainingCost - plan.goldMissing) / Math.max(1, plan.remainingCost) * 100);
-    const src = c.buildSource && c.buildSource.kind === "stats" ? 'High-Elo · '+c.buildSource.games+' Spiele' : 'Regeln';
+    const src = c.buildSource && c.buildSource.kind === "stats" ? 'High-Elo · '+c.buildSource.games+' Spiele' : 'Schätzung – keine High-Elo-Daten';
     h += '<div class="card"><div class="lbl"><span>Nächster Kauf</span><span>'+esc(src)+'</span></div><div class="row">'+itemImg(v,b.nextItem.id,"item")+'<div><div class="name">'+esc(b.nextItem.name)+'</div><div class="mut">'+(plan.completes?'<span class="ahead">Jetzt kaufbar!</span>':'noch '+plan.goldMissing+' g')+'</div></div></div>';
     if (!plan.completes) h += '<div class="bar"><i style="width:'+pct+'%"></i></div>';
     if (!plan.completes && plan.buyNow.length) h += '<div class="chips">'+plan.buyNow.map(x=>'<span class="chip">'+itemImg(v,x.id)+esc(x.name)+' '+x.cost+'</span>').join("")+'</div>';

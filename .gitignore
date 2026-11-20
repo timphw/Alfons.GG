@@ -14,3 +14,5 @@ coverage
 apps/web/public/downloads/alfons-companion.mjs
 apps/web/public/downloads/alfons-overlay.cjs
 packages/shared/.crawl
+apps/web/public/downloads/Alfons-GG-Companion.zip
+apps/web/public/downloads/Alfons-Companion-Starten.cmd
