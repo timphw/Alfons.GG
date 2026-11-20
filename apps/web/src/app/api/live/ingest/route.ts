@@ -1,5 +1,6 @@
 import { coach, LiveSnapshot, MAX_INGEST_BYTES, type CoachResult } from "@alfons/shared";
 import { getStaticData } from "@/lib/static-data";
+import { buildStats } from "@/lib/build-stats";
 import { authenticateCompanion } from "@/lib/companion-auth";
 import { liveStore } from "@/lib/live-store";
 
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
 
   let coachResult: CoachResult | undefined;
   try {
-    coachResult = coach(parsed.data, await getStaticData());
+    coachResult = coach(parsed.data, await getStaticData(), { stats: buildStats });
   } catch (err) {
     console.error("[coach]", err); // Live-Daten trotzdem speichern
   }

@@ -205,37 +205,44 @@ const OVERLAY_HTML = /* html */ `<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><title>Alfons.GG Overlay</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  :root{--bg:#0d1220;--card:#161d30;--fg:#eef1f7;--mut:#94a0b8;--gold:#e8c36a;--red:#ef6a6a;--blue:#6aa6ef}
+  :root{--bg:#0d1220;--card:#161d30;--fg:#eef1f7;--mut:#94a0b8;--gold:#e8c36a;--red:#ef6a6a;--blue:#6aa6ef;--green:#5fd08a}
   *{box-sizing:border-box;margin:0}
   body{background:var(--bg);color:var(--fg);font:13px/1.35 system-ui,Segoe UI,sans-serif;padding:10px;user-select:none}
   .row{display:flex;align-items:center;gap:8px}
-  .top{justify-content:space-between;margin-bottom:8px}
+  .top{justify-content:space-between;margin-bottom:6px}
   .brand{font-weight:800;letter-spacing:-.02em}.brand b{color:var(--gold)}
   .time{font:600 15px ui-monospace,Consolas,monospace}
-  .gold{color:var(--gold);font-weight:700;font-size:22px}
-  .card{background:var(--card);border-radius:10px;padding:10px;margin-bottom:8px}
-  .lbl{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-  .item{width:44px;height:44px;border-radius:7px;outline:1px solid #e8c36a88}
-  .sm{width:24px;height:24px;border-radius:4px}
-  .name{font-weight:600}.mut{color:var(--mut);font-size:12px}
-  .bar{height:5px;background:#26304a;border-radius:9px;overflow:hidden;margin-top:8px}.bar>i{display:block;height:100%;background:var(--gold)}
-  .now{color:var(--gold);font-weight:700}
-  .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-  .chip{display:flex;align-items:center;gap:4px;background:#0d1220;border-radius:6px;padding:2px 6px 2px 2px;font-size:12px}
-  .tips{list-style:none;padding:0;display:grid;gap:5px}
-  .tip{padding:6px 8px;border-radius:7px;background:#0d1220;border-left:3px solid #3a4560}
-  .tip.high{border-color:var(--gold);font-weight:600}.tip.info{color:var(--mut)}
-  .obj{font-size:12px;padding:2px 7px;border-radius:99px;border:1px solid #3a4560;color:var(--mut)}
+  .gold{color:var(--gold);font-weight:700;font-size:20px}
+  .card{background:var(--card);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+  .lbl{color:var(--mut);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;justify-content:space-between;gap:6px}
+  .now{border-left:3px solid var(--gold);font-weight:600}
+  .now small{display:block;font-weight:400;color:var(--mut);font-size:11.5px;margin-top:2px}
+  .item{width:38px;height:38px;border-radius:7px;outline:1px solid #e8c36a88}
+  .sm{width:22px;height:22px;border-radius:4px}.xs{width:15px;height:15px;border-radius:3px}
+  .ch{width:30px;height:30px;border-radius:6px}
+  .name{font-weight:600}.mut{color:var(--mut);font-size:11.5px}
+  .bar{height:4px;background:#26304a;border-radius:9px;overflow:hidden;margin-top:6px}.bar>i{display:block;height:100%;background:var(--gold)}
+  .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+  .chip{display:flex;align-items:center;gap:4px;background:#0d1220;border-radius:6px;padding:2px 6px 2px 2px;font-size:11.5px}
+  .tips{list-style:none;padding:0;display:grid;gap:4px}
+  .tip{padding:5px 8px;border-radius:7px;background:#0d1220;border-left:3px solid #3a4560;font-size:12px}
+  .tip.high{border-color:var(--gold)}.tip.info{color:var(--mut)}
+  .obj{font-size:11.5px;padding:2px 7px;border-radius:99px;border:1px solid #3a4560;color:var(--mut)}
   .obj.soon{border-color:var(--red);color:var(--red)}.obj.up{border-color:var(--gold);color:var(--gold)}
-  .wait{color:var(--mut);text-align:center;padding:30px 0}
-  .dead{color:var(--red);font-weight:700}
+  .wait{color:var(--mut);text-align:center;padding:24px 0}
+  .ahead{color:var(--green)}.behind{color:var(--red)}.even{color:var(--mut)}
+  .duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+  .duel .r{justify-content:flex-end;text-align:right}
+  .stat{font-size:11.5px;color:var(--mut);line-height:1.25}.stat b{color:var(--fg)}
+  .vs{color:var(--mut);font-size:11px}
+  .reasons{margin-top:5px;padding-left:14px;font-size:11.5px;color:var(--mut)}
+  .dead{opacity:.45;filter:grayscale(1)}
   .hint{display:none;font-size:11px;color:var(--gold);margin-bottom:6px}
   /* Ingame-Overlay (Electron): transparent, halbtransparente Karten */
   body.overlay{background:transparent;padding:4px;text-shadow:0 1px 2px #000}
   body.overlay .top,body.overlay .card{background:rgba(13,18,32,.90)}
   body.overlay .top{padding:5px 8px;border-radius:9px}
-  body.overlay .tip{background:rgba(13,18,32,.90)}
-  body.overlay .obj{background:rgba(13,18,32,.90)}
+  body.overlay .tip,body.overlay .obj,body.overlay .chip{background:rgba(13,18,32,.90)}
   body.overlay .wait{padding:6px;font-size:12px;background:rgba(13,18,32,.6);border-radius:8px}
   body.interactive{outline:2px dashed var(--gold);outline-offset:-2px;min-height:100vh}
   body.interactive .top{-webkit-app-region:drag;cursor:move}
@@ -248,32 +255,70 @@ const OVERLAY_HTML = /* html */ `<!doctype html>
 if (new URLSearchParams(location.search).get("mode") === "overlay") document.body.classList.add("overlay");
 const DD = "https://ddragon.leagueoflegends.com/cdn/";
 const fmt = s => { s = Math.max(0, Math.round(s)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); };
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const VERDICT = { ahead: "Vorteil", even: "Ausgeglichen", behind: "Nachteil" };
 let st = null, recv = 0;
+const champImg = (v, id, cls) => '<img class="'+(cls||"ch")+'" src="'+DD+v+'/img/champion/'+esc(id)+'.png">';
+const spellImg = (v, key) => key ? '<img class="xs" title="'+esc(key.replace("Summoner",""))+'" src="'+DD+v+'/img/spell/'+esc(key)+'.png">' : "";
+const itemImg = (v, id, cls) => '<img class="'+(cls||"sm")+'" src="'+DD+v+'/img/item/'+id+'.png">';
+const fmtG = g => g >= 1000 ? (g/1000).toFixed(1)+"k" : String(Math.round(g));
+
+function laneSide(v, p, right) {
+  return '<div class="row'+(right?" r":"")+'">'+(right?"":champImg(v,p.champion,"ch"+(p.isDead?" dead":"")))+
+    '<div class="stat"><b>Lvl '+p.level+'</b> · '+p.cs+' CS<br>'+fmtG(p.itemGold)+' g '+p.spells.map(k=>spellImg(v,k)).join("")+'</div>'+
+    (right?champImg(v,p.champion,"ch"+(p.isDead?" dead":"")):"")+'</div>';
+}
+
 function render(){
   const app = document.getElementById("app");
   if (!st || st.status === "waiting" || !st.snapshot) { app.innerHTML = '<p class="wait">Warte auf Spiel …</p>'; document.getElementById("time").textContent=""; document.getElementById("gold").textContent=""; return; }
-  const s = st.snapshot, c = st.coach, v = st.version;
+  const s = st.snapshot, c = st.coach || {}, v = st.version;
   const gt = s.status === "in-game" ? s.gameTime + (Date.now()-recv)/1000 : s.gameTime;
   document.getElementById("time").textContent = fmt(gt);
   document.getElementById("gold").textContent = s.activePlayer ? Math.floor(s.activePlayer.currentGold) + " g" : "";
   if (s.status === "ended") { app.innerHTML = '<p class="wait">Spiel beendet – ' + (s.result === "Win" ? "Sieg 🎉" : "Niederlage") + '</p>'; return; }
-  const me = s.players.find(p => p.riotId === s.activePlayer?.riotId);
   let h = "";
-  if (me && me.isDead) h += '<div class="card dead">Tot – Respawn in ' + Math.ceil(me.respawnTimer) + ' s · jetzt einkaufen!</div>';
-  const b = c && c.build, plan = b && b.nextPurchase;
-  if (b && b.nextItem && plan && v) {
-    const pct = Math.min(100, (plan.remainingCost - plan.goldMissing) / Math.max(1, plan.remainingCost) * 100);
-    h += '<div class="card"><div class="lbl">Nächster Kauf</div><div class="row"><img class="item" src="'+DD+v+'/img/item/'+b.nextItem.id+'.png"><div><div class="name">'+esc(b.nextItem.name)+'</div><div class="mut">'+(plan.completes?'<span class="now">Jetzt kaufbar!</span>':'noch '+plan.goldMissing+' g')+'</div></div></div>';
-    if (!plan.completes) h += '<div class="bar"><i style="width:'+pct+'%"></i></div>';
-    if (!plan.completes && plan.buyNow.length) h += '<div class="chips">'+plan.buyNow.map(x=>'<span class="chip"><img class="sm" src="'+DD+v+'/img/item/'+x.id+'.png">'+esc(x.name)+' '+x.cost+'</span>').join("")+'</div>';
-    if (b.nextItem.reasons[0]) h += '<div class="mut" style="margin-top:6px">'+esc(b.nextItem.reasons[0])+'</div>';
-    const next = b.items.slice(1,4);
-    if (next.length) h += '<div class="chips" style="margin-top:8px">'+next.map(x=>'<img class="sm" title="'+esc(x.name)+'" src="'+DD+v+'/img/item/'+x.id+'.png">').join("")+'</div>';
+
+  // Jetzt
+  if (c.now) h += '<div class="card now">▶ '+esc(c.now.text)+(c.now.detail?'<small>'+esc(c.now.detail)+'</small>':'')+'</div>';
+
+  // Rolle: Lane-Duell oder Jungle
+  if (v && c.jungle) {
+    const j = c.jungle;
+    h += '<div class="card"><div class="lbl"><span>Jungle</span>'+(j.campsSpawnIn!=null?'<span>Camps in '+fmt(j.campsSpawnIn)+'</span>':j.scuttleSpawnIn!=null?'<span>Scuttle in '+fmt(j.scuttleSpawnIn)+'</span>':'')+'</div>';
+    if (j.enemyJungler) {
+      const e = j.enemyJungler, seen = e.lastSeen;
+      h += '<div class="row">'+champImg(v,e.champion,"ch"+(e.isDead?" dead":""))+'<div class="stat"><b>'+esc(e.championName)+'</b> (Gegner)<br>'+
+        (e.isDead ? '<span class="ahead">tot – '+Math.ceil(e.respawnTimer)+' s</span>' : seen ? 'zuletzt '+esc(seen.where)+' · vor '+fmt(gt-seen.time)+' ('+esc(seen.what)+')' : 'noch nicht gesehen')+'</div></div>';
+    }
+    if (j.gankTarget) h += '<div class="mut" style="margin-top:5px">🎯 Gank-Ziel: <b style="color:var(--fg)">'+esc(j.gankTarget.lane)+'</b> – '+esc(j.gankTarget.reason)+'</div>';
+    if (j.clears && j.clears.length) h += '<div class="chips">'+j.clears.map(cl=>{const d=cl.respawnAt-gt;return '<span class="obj '+(d<=0?"up":d<=20?"soon":"")+'" title="geräumt '+fmt(cl.at)+'">Camp '+(d<=0?"wieder da":"~"+fmt(d))+'</span>'}).join("")+'</div>';
+    h += '</div>';
+  } else if (v && c.lane) {
+    const l = c.lane;
+    h += '<div class="card"><div class="lbl"><span>'+esc(l.role)+'</span><span class="'+l.verdict+'">'+VERDICT[l.verdict]+'</span></div>'+
+      '<div class="duel"><div>'+l.me.map(p=>laneSide(v,p,false)).join("")+'</div><span class="vs">vs</span><div>'+l.enemy.map(p=>laneSide(v,p,true)).join("")+'</div></div>';
+    if (l.reasons.length) h += '<ul class="reasons">'+l.reasons.slice(0,3).map(r=>'<li>'+esc(r)+'</li>').join("")+'</ul>';
     h += '</div>';
   }
-  if (c && c.objectives.length) h += '<div class="chips" style="margin:0 0 8px">'+c.objectives.map(o=>{const d=o.spawnAt-gt;return '<span class="obj '+(d<=0?"up":d<=75?"soon":"")+'">'+esc(o.name)+' '+(d<=0?"da":fmt(d))+'</span>'}).join("")+'</div>';
-  if (c && c.tips.length) h += '<ul class="tips">'+c.tips.slice(0,4).map(t=>'<li class="tip '+t.priority+'">'+esc(t.text)+'</li>').join("")+'</ul>';
+
+  // Nächster Kauf
+  const b = c.build, plan = b && b.nextPurchase;
+  if (b && b.nextItem && plan && v) {
+    const pct = Math.min(100, (plan.remainingCost - plan.goldMissing) / Math.max(1, plan.remainingCost) * 100);
+    const src = c.buildSource && c.buildSource.kind === "stats" ? 'High-Elo · '+c.buildSource.games+' Spiele' : 'Regeln';
+    h += '<div class="card"><div class="lbl"><span>Nächster Kauf</span><span>'+esc(src)+'</span></div><div class="row">'+itemImg(v,b.nextItem.id,"item")+'<div><div class="name">'+esc(b.nextItem.name)+'</div><div class="mut">'+(plan.completes?'<span class="ahead">Jetzt kaufbar!</span>':'noch '+plan.goldMissing+' g')+'</div></div></div>';
+    if (!plan.completes) h += '<div class="bar"><i style="width:'+pct+'%"></i></div>';
+    if (!plan.completes && plan.buyNow.length) h += '<div class="chips">'+plan.buyNow.map(x=>'<span class="chip">'+itemImg(v,x.id)+esc(x.name)+' '+x.cost+'</span>').join("")+'</div>';
+    if (b.nextItem.reasons[0]) h += '<div class="mut" style="margin-top:5px">'+esc(b.nextItem.reasons[0])+'</div>';
+    const next = b.items.slice(1,5);
+    if (next.length) h += '<div class="chips">'+next.map(x=>'<span title="'+esc(x.name+" – "+(x.reasons[0]||""))+'">'+itemImg(v,x.id)+'</span>').join("")+'</div>';
+    h += '</div>';
+  }
+
+  if (c.objectives && c.objectives.length) h += '<div class="chips" style="margin:0 0 6px">'+c.objectives.map(o=>{const d=o.spawnAt-gt;return '<span class="obj '+(d<=0?"up":d<=75?"soon":"")+'">'+esc(o.name)+' '+(d<=0?"da":fmt(d))+'</span>'}).join("")+'</div>';
+  const rest = (c.tips || []).filter(t => (!c.now || t.id !== c.now.id) && t.kind !== "lane" && t.kind !== "jungle").slice(0, 3);
+  if (rest.length) h += '<ul class="tips">'+rest.map(t=>'<li class="tip '+t.priority+'">'+esc(t.text)+'</li>').join("")+'</ul>';
   app.innerHTML = h || '<p class="wait">Alles im Griff.</p>';
 }
 const es = new EventSource("/events");

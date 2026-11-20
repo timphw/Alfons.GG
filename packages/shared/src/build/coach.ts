@@ -1,6 +1,9 @@
 import type { LivePlayer, LiveSnapshot, TeamSide } from "../live/snapshot";
-import { recommendBuild, type BuildPlayer, type BuildRecommendation } from "./engine";
-import type { BuildData } from "./items";
+import { classifyChampion, recommendBuild, type BuildPlayer, type BuildRecommendation } from "./engine";
+import { findChampionById, type BuildData } from "./items";
+import { analyzeLane, type LaneInfo } from "./lane";
+import { analyzeJungle, type JungleInfo, type JungleState } from "./jungle";
+import { findBuildStats, type BuildStats, type ChampionRoleBuild } from "./stats";
 
 /**
  * Coach: leitet aus dem Live-Snapshot konkrete Tipps ab („was als Nächstes tun?“).
@@ -17,7 +20,7 @@ export const OBJECTIVE_TIMERS = {
 } as const;
 
 export type TipPriority = "high" | "medium" | "info";
-export type TipKind = "shop" | "objective" | "danger" | "macro" | "farm" | "vision";
+export type TipKind = "shop" | "objective" | "danger" | "macro" | "farm" | "vision" | "lane" | "jungle";
 
 export interface CoachTip {
   id: string;
@@ -37,6 +40,29 @@ export interface CoachResult {
   build: BuildRecommendation | null;
   tips: CoachTip[];
   objectives: ObjectiveTimer[];
+  /** Die eine wichtigste Handlung jetzt */
+  now?: CoachTip | null;
+  role?: string;
+  lane?: LaneInfo | null;
+  jungle?: JungleInfo | null;
+  /** Woher die Item-Empfehlung kommt */
+  buildSource?: { kind: "stats"; games: number; patch: string } | { kind: "rules" };
+}
+
+export interface CoachExtras {
+  stats?: BuildStats | null;
+  jungle?: JungleState | null;
+}
+
+const TRINKETS = new Set([3340, 3363, 3364, 2055]);
+/** Standard-Start-Items je Rolle, falls keine Statistik vorhanden ist */
+function defaultStart(role: string, style: string, damage: string): number[] {
+  if (role === "JUNGLE") return [1102, 2003];
+  if (role === "UTILITY") return [3865, 2003, 2003];
+  if (role === "BOTTOM") return [1055, 2003];
+  if (damage === "AP" && (style === "mage" || style === "ap-fighter" || style === "enchanter")) return [1056, 2003, 2003];
+  if (style === "tank" || style === "fighter") return [1054, 2003];
+  return [1055, 2003];
 }
 
 const CS_TARGET: Record<string, number> = { TOP: 6.5, JUNGLE: 5.5, MIDDLE: 7, BOTTOM: 7.5 };
@@ -97,10 +123,10 @@ export function objectiveTimers(s: LiveSnapshot): ObjectiveTimer[] {
   return out.sort((a, b) => a.spawnAt - b.spawnAt);
 }
 
-export function coach(s: LiveSnapshot, data: BuildData): CoachResult {
+export function coach(s: LiveSnapshot, data: BuildData, extras: CoachExtras = {}): CoachResult {
   const objectives = objectiveTimers(s);
   const me = s.players.find((p) => p.riotId === s.activePlayer?.riotId);
-  if (!me || !s.activePlayer) return { build: null, tips: [], objectives };
+  if (!me || !s.activePlayer) return { build: null, tips: [], objectives, now: null };
 
   const myTeam: TeamSide = me.team;
   const enemyTeam: TeamSide = myTeam === "ORDER" ? "CHAOS" : "ORDER";
@@ -109,13 +135,43 @@ export function coach(s: LiveSnapshot, data: BuildData): CoachResult {
   const gold = s.activePlayer.currentGold;
   const minutes = s.gameTime / 60;
 
+  const roleStats: ChampionRoleBuild | null = findBuildStats(extras.stats, me.champion, me.position || undefined);
   const build = recommendBuild(
-    { me: toBuildPlayer(me), gold, gameTime: s.gameTime, enemies: enemies.map(toBuildPlayer), teamGoldDiff: goldDiff },
+    {
+      me: toBuildPlayer(me),
+      gold,
+      gameTime: s.gameTime,
+      enemies: enemies.map(toBuildPlayer),
+      teamGoldDiff: goldDiff,
+      stats: roleStats,
+    },
     data,
   );
+  const lane = analyzeLane(s, data);
+  const jungle = extras.jungle ? analyzeJungle(s, extras.jungle, data) : me.position === "JUNGLE" ? analyzeJungle(s, { lastCs: -1, lastTime: 0, burstCs: 0, burstLast: 0, clears: [] }, data) : null;
+  const buildSource: CoachResult["buildSource"] = roleStats
+    ? { kind: "stats", games: roleStats.games, patch: extras.stats?.patch ?? "" }
+    : { kind: "rules" };
+  const base = { build, objectives, role: me.position, lane, jungle, buildSource };
 
   const tips: CoachTip[] = [];
-  if (s.status === "ended") return { build, tips, objectives };
+  if (s.status === "ended") return { ...base, tips, now: null };
+
+  // 0) Start-Items vergessen?
+  const realItems = me.items.filter((i) => !TRINKETS.has(i.id));
+  if (s.gameTime < 150 && realItems.length === 0 && gold >= 300) {
+    const champ = findChampionById(data.champions, me.champion);
+    const cls = champ ? classifyChampion(champ, me.position) : { style: "fighter", damage: "AD" };
+    const start = (roleStats?.start.map(Number) ?? defaultStart(me.position, cls.style, cls.damage)).filter((id) => !TRINKETS.has(id));
+    const names = start.map((id) => data.items[String(id)]?.name).filter(Boolean);
+    tips.push({
+      id: "start-items",
+      priority: "high",
+      kind: "shop",
+      text: `Start-Items kaufen! ${names.length ? names.join(" + ") : "Dorans-Item + Heiltrank"}`,
+      detail: `Du hast noch ${Math.floor(gold)} g und nichts gekauft.`,
+    });
+  }
 
   // 1) Einkauf
   const plan = build?.nextPurchase;
@@ -230,6 +286,32 @@ export function coach(s: LiveSnapshot, data: BuildData): CoachResult {
     }
   }
 
+  // 8) Lane-Duell
+  if (lane && me.position !== "JUNGLE") {
+    tips.push({
+      id: `lane-${lane.verdict}`,
+      priority: lane.verdict === "behind" ? "medium" : "info",
+      kind: "lane",
+      text: lane.advice,
+      detail: lane.reasons.slice(0, 2).join(" · ") || undefined,
+    });
+  }
+
+  // 9) Jungle
+  if (jungle) {
+    tips.push({ id: "jungle", priority: "medium", kind: "jungle", text: jungle.advice });
+    const soon = jungle.clears.find((c) => c.respawnAt - s.gameTime > 0 && c.respawnAt - s.gameTime <= 20);
+    if (soon) {
+      tips.push({
+        id: "camp-respawn",
+        priority: "info",
+        kind: "jungle",
+        text: `Camp (geräumt ${fmtTime(soon.at)}) ist in ~${fmtTime(soon.respawnAt - s.gameTime)} wieder da (Schätzung).`,
+      });
+    }
+  }
+
   tips.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
-  return { build, tips: tips.slice(0, 6), objectives };
+  const top = tips.slice(0, 6);
+  return { ...base, tips: top, now: top[0] ?? null };
 }

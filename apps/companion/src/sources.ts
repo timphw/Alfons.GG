@@ -24,9 +24,9 @@ export class SimulatorSource implements DataSource {
 
   constructor(
     private readonly speed = 1,
-    opts: { seed?: number; startAt?: number; durationSec?: number } = {},
+    opts: { seed?: number; startAt?: number; durationSec?: number; activeIndex?: number } = {},
   ) {
-    this.sim = new GameSimulator({ seed: opts.seed, durationSec: opts.durationSec });
+    this.sim = new GameSimulator({ seed: opts.seed, durationSec: opts.durationSec, activeIndex: opts.activeIndex });
     if (opts.startAt) this.sim.fastForward(opts.startAt);
     this.label = `Simulator (x${speed})`;
   }

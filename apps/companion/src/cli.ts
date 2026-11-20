@@ -1,12 +1,12 @@
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { coach, type CoachResult, type LiveSnapshot } from "@alfons/shared";
+import { coach, initJungleState, updateJungle, type CoachResult, type LiveSnapshot } from "@alfons/shared";
 import { loadConfig, saveConfig, DEFAULT_SERVER } from "./config";
 import { LiveSource, ReplaySource, SimulatorSource, type DataSource } from "./sources";
 import { GameTracker } from "./tracker";
 import { Uploader } from "./uploader";
-import { loadBuildData } from "./static-data";
+import { loadBuildData, loadBuildStats } from "./static-data";
 import { TerminalCoach } from "./terminal-coach";
 import { OverlayServer, launchIngameOverlay, openOverlayWindow } from "./overlay-server";
 
@@ -22,6 +22,7 @@ Optionen für run:
   --mock                Simuliertes Spiel statt echter Live-Daten
   --speed N             Simulations-/Replay-Geschwindigkeit (Standard 1)
   --start MIN           Simulation bei Minute MIN starten
+  --role ROLLE          Simulation als TOP|JUNGLE|MIDDLE|BOTTOM|UTILITY spielen
   --replay DATEI        Aufnahme (JSONL) oder gespeichertes allgamedata-JSON abspielen
   --record ORDNER       Rohdaten jedes Polls als JSONL aufnehmen (für Fixtures)
   --interval MS         Poll-Intervall (Standard 1000, min. 500)
@@ -51,6 +52,7 @@ async function main() {
       "no-overlay": { type: "boolean", default: false },
       "overlay-port": { type: "string", default: "2998" },
       quiet: { type: "boolean", default: false },
+      role: { type: "string" },
       browser: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
     },
@@ -83,6 +85,7 @@ async function main() {
       openOverlay: values["open-overlay"],
       overlayPort: Number(values["overlay-port"]),
       quiet: values.quiet,
+      role: values.role,
     });
   }
   console.error(`Unbekannter Befehl: ${command}\n\n${HELP}`);
@@ -137,6 +140,7 @@ interface RunOptions {
   openOverlay: boolean;
   overlayPort: number;
   quiet: boolean;
+  role?: string;
 }
 
 async function run(opts: RunOptions) {
@@ -151,7 +155,10 @@ async function run(opts: RunOptions) {
   const source: DataSource = opts.replay
     ? new ReplaySource(opts.replay, opts.speed)
     : opts.mock
-      ? new SimulatorSource(opts.speed, { startAt: opts.startMin ? opts.startMin * 60 : undefined })
+      ? new SimulatorSource(opts.speed, {
+          startAt: opts.startMin ? opts.startMin * 60 : undefined,
+          activeIndex: opts.role ? Math.max(0, ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"].indexOf(opts.role.toUpperCase())) : undefined,
+        })
       : new LiveSource();
   const uploader = cfg.token ? new Uploader(server, cfg.token) : null;
   const tracker = new GameTracker();
@@ -162,8 +169,14 @@ async function run(opts: RunOptions) {
   if (cfg.riotId) console.log(`Account: ${cfg.riotId}`);
 
   // Lokale Build-Engine + Overlay (funktionieren auch ohne Website/Redis)
-  const buildData = await loadBuildData();
+  const [buildData, buildStats] = await Promise.all([loadBuildData(), loadBuildStats(server)]);
   if (!buildData) console.warn("⚠ Data Dragon nicht erreichbar – keine Build-Tipps.");
+  console.log(
+    buildStats
+      ? `Builds: High-Elo-Statistik Patch ${buildStats.patch} (${buildStats.matches} Matches)`
+      : "Builds: keine Statistik verfügbar – regelbasierte Empfehlungen",
+  );
+  let jungleState = initJungleState();
   const terminalCoach = opts.quiet ? null : new TerminalCoach();
   let overlay: OverlayServer | null = null;
   if (opts.overlay) {
@@ -180,7 +193,8 @@ async function run(opts: RunOptions) {
   const analyze = (s: LiveSnapshot): CoachResult | null => {
     if (!buildData) return null;
     try {
-      return coach(s, buildData);
+      jungleState = updateJungle(jungleState, s);
+      return coach(s, buildData, { stats: buildStats, jungle: jungleState });
     } catch {
       return null;
     }

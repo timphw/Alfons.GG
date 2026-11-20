@@ -13,6 +13,7 @@ import {
   type BuildData,
   type PurchasePlan,
 } from "./items";
+import type { ChampionRoleBuild } from "./stats";
 
 /**
  * Regelbasierte, deterministische Build-Engine.
@@ -45,8 +46,8 @@ export interface BuildInput {
   enemies: BuildPlayer[];
   /** Positive Werte = eigenes Team vorne (z.B. Item-Gold-Differenz) */
   teamGoldDiff: number;
-  /** Optional: Statistik-Basis – Item-IDs in empfohlener Reihenfolge */
-  coreItems?: string[];
+  /** Optional: High-Elo-Statistik für Champion & Rolle (Crawler) */
+  stats?: ChampionRoleBuild | null;
 }
 
 export interface ItemRecommendation {
@@ -207,40 +208,58 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
   const adShare = 1 - enemy.apShare;
   const lead = input.teamGoldDiff + (input.me.kills - input.me.deaths) * 150;
 
+  const stats = input.stats ?? null;
+  // Beim ersten fertigen Item gelten Situations-Regeln nur gedämpft (Rush-Items sind selten richtig)
+  const situ = ownedLegendaries === 0 ? 0.4 : 1;
+
   const candidates: Candidate[] = [];
   for (const [id, item] of Object.entries(data.items)) {
     if (owned.has(id) || blocked.has(id)) continue;
     if (!isLegendary(id, item)) continue;
-    let score = baseScore(item, weights);
+    const styleScore = baseScore(item, weights);
+    const st = stats?.items[id];
+    const coreIdx = stats?.core.indexOf(id) ?? -1;
     const reasons: string[] = [];
+    let score: number;
+
+    if (stats) {
+      // Statistik zuerst: High-Elo-Reihenfolge + Pickrate, Archetyp nur noch als leichte Tendenz
+      score = styleScore * 0.3 + (coreIdx !== -1 ? Math.max(2, 10 - coreIdx * 1.5) + 2 * (st?.pick ?? 0) : st ? 6 * st.pick : 0);
+      if (coreIdx !== -1 && st) reasons.push(`High-Elo-Build #${coreIdx + 1} · ${fmtPct(st.pick)} bauen es · ${fmtPct(st.win)} Winrate`);
+      else if (st && st.pick >= 0.08) reasons.push(`${fmtPct(st.pick)} der High-Elo-Spieler bauen es (${fmtPct(st.win)} WR)`);
+    } else {
+      score = styleScore;
+    }
     const tags = new Set(item.tags);
     const offensive = item.tags.some((t) => OFFENSIVE_TAGS.has(t) && (weights[t] ?? 0) > 0);
-    // Nur Items, die grundsätzlich zum Archetyp passen, bekommen situative Boni
-    if (score < 0.8) {
+    // Situative Boni nur für Items, die zum Champion passen (Statistik oder Archetyp)
+    const fits = stats ? !!st || styleScore >= 1.2 : styleScore >= 0.8;
+    if (!fits) {
       candidates.push({ id, item, score, reasons });
       continue;
     }
 
-    // Statistik-Basis (Phase 4b)
-    const coreIdx = input.coreItems?.indexOf(id) ?? -1;
-    if (coreIdx !== -1) {
-      score += 3 - coreIdx * 0.4;
-      reasons.push("Häufiges Core-Item in High-Elo");
+    // Bereits gekaufte Komponenten → Item fertig machen
+    const plan = planPurchase(id, input.me.items, 0, data.items);
+    const progress = 1 - plan.remainingCost / item.gold.total;
+    if (progress >= 0.2) {
+      score += progress * 3;
+      reasons.push(`${fmtPct(progress)} der Komponenten schon gekauft`);
     }
 
     // Schadensprofil → Resistenzen
     if (enemy.apShare >= 0.6 && tags.has("SpellBlock")) {
-      score += 3 * (enemy.apShare - 0.45);
+      score += 3 * (enemy.apShare - 0.45) * situ;
       reasons.push(`Gegner macht ~${fmtPct(enemy.apShare)} magischen Schaden`);
     }
     if (adShare >= 0.6 && tags.has("Armor")) {
-      score += 3 * (adShare - 0.45);
+      score += 3 * (adShare - 0.45) * situ;
       reasons.push(`Gegner macht ~${fmtPct(adShare)} physischen Schaden`);
     }
 
     // Heilung → Klaffende Wunden
     if (!hasAntiHeal && enemy.healers.length >= 2 && isAntiHeal(id, item)) {
-      score += 1.2 + enemy.healers.length * 0.8;
+      score += (1.2 + enemy.healers.length * 0.8) * situ;
       reasons.push(`Gegner hat ${enemy.healers.length} Heiler (${list(enemy.healers)}) → Klaffende Wunden`);
     }
 
@@ -248,7 +267,7 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
     if (enemy.tanks.length >= 2 && offensive) {
       const pen = damage === "AD" ? tags.has("ArmorPenetration") : tags.has("MagicPenetration");
       if (pen || TANK_SHRED_IDS.has(id)) {
-        score += 1 + enemy.tanks.length * 0.5 + (TANK_SHRED_IDS.has(id) ? 0.8 : 0);
+        score += (1 + enemy.tanks.length * 0.5 + (TANK_SHRED_IDS.has(id) ? 0.8 : 0)) * situ;
         reasons.push(`${enemy.tanks.length} Tanks im Gegnerteam (${list(enemy.tanks)}) → ${pen ? "Penetration" : "%-Schaden"}`);
       }
     }
@@ -256,11 +275,11 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
     // Burst/Assassinen → Überleben
     const antiBurst = damage === "AP" ? ANTI_BURST_AP.has(id) : ANTI_BURST_AD.has(id);
     if (enemy.threats.length > 0 && antiBurst && style !== "tank" && style !== "support-tank") {
-      score += 1.5 + enemy.threats.length * 0.7;
+      score += (1.5 + enemy.threats.length * 0.7) * situ;
       reasons.push(`Gefährlich: ${list(enemy.threats)} → Schutz gegen Burst`);
     }
     if (enemy.suppressors.length > 0 && CLEANSE_IDS.has(id) && (style === "marksman" || style === "assassin")) {
-      score += 2.5;
+      score += 2.5 * situ;
       reasons.push(`${list(enemy.suppressors)} hat Unterdrückung → QSS`);
     }
 
@@ -273,8 +292,8 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
       reasons.push(`Ihr liegt ~${fmtGold(lead)} Gold zurück → mehr Überleben`);
     }
 
-    // Früh im Spiel günstigere Items leicht bevorzugen
-    if (input.gameTime < 20 * 60) score -= (item.gold.total - 2500) / 2500;
+    // Ohne Statistik: früh im Spiel günstigere Items leicht bevorzugen
+    if (!stats && input.gameTime < 20 * 60) score -= (item.gold.total - 2500) / 2500;
 
     candidates.push({ id, item, score, reasons });
   }
@@ -296,7 +315,7 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
 
   // Stiefel: nach dem ersten Item (oder spätestens ab Minute 12) einplanen
   if (!hasBoots && data.items["1001"]) {
-    const boots = chooseBoots(style, damage, enemy, data);
+    const boots = chooseBoots(style, damage, enemy, data, stats);
     if (boots) {
       const pos = ownedLegendaries >= 1 || input.gameTime > 12 * 60 ? 0 : 1;
       picked.splice(Math.min(pos, picked.length), 0, boots);
@@ -316,11 +335,23 @@ export function recommendBuild(input: BuildInput, data: BuildData): BuildRecomme
   return { champion: champ.name, style, damage, enemy, items, nextItem, nextPurchase };
 }
 
-function chooseBoots(style: Style, damage: "AD" | "AP", enemy: EnemyProfile, data: BuildData): Candidate | null {
+function chooseBoots(
+  style: Style,
+  damage: "AD" | "AP",
+  enemy: EnemyProfile,
+  data: BuildData,
+  stats: ChampionRoleBuild | null,
+): Candidate | null {
   const adShare = 1 - enemy.apShare;
   let id: string;
   let reason: string;
-  if (enemy.apShare >= 0.62 || enemy.suppressors.length > 0) {
+  // Schützen lösen Unterdrückung über QSS, nicht über Stiefel
+  const strongAp = enemy.apShare >= 0.68 || (enemy.suppressors.length > 0 && style !== "marksman");
+  const strongAd = adShare >= 0.72 && style !== "mage" && style !== "enchanter" && style !== "marksman";
+  if (stats?.boots && !strongAp && !strongAd) {
+    id = stats.boots;
+    reason = "High-Elo-Standard für diesen Champion";
+  } else if (enemy.apShare >= 0.62 || enemy.suppressors.length > 0) {
     id = "3111";
     reason = enemy.suppressors.length > 0 ? "Viel Crowd-Control beim Gegner → Zähigkeit" : `Gegner macht ~${fmtPct(enemy.apShare)} magischen Schaden`;
   } else if (adShare >= 0.62 && style !== "mage" && style !== "enchanter") {

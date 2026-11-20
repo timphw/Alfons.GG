@@ -10,7 +10,9 @@ import {
   FlagIcon,
   ShoppingBagIcon,
   SwordsIcon,
+  TreesIcon,
   WheatIcon,
+  SwordIcon,
 } from "lucide-react";
 import { formatDuration } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -22,6 +24,8 @@ const KIND_ICON: Record<CoachTip["kind"], React.ComponentType<{ className?: stri
   macro: SwordsIcon,
   farm: WheatIcon,
   vision: EyeIcon,
+  lane: SwordIcon,
+  jungle: TreesIcon,
 };
 
 const PRIORITY_STYLE: Record<CoachTip["priority"], string> = {

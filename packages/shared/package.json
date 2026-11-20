@@ -12,7 +12,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "gen:fixtures": "tsx scripts/gen-fixtures.ts",
-    "fixture:ddragon": "tsx scripts/fetch-ddragon-fixture.ts"
+    "fixture:ddragon": "tsx scripts/fetch-ddragon-fixture.ts",
+    "crawl": "tsx scripts/crawl-builds.ts"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",

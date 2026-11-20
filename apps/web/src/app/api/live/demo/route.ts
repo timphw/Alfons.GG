@@ -1,5 +1,6 @@
 import { coach, GameSimulator, normalizeAllGameData, type LiveState } from "@alfons/shared";
 import { getStaticData } from "@/lib/static-data";
+import { buildStats } from "@/lib/build-stats";
 
 const SPEED = 10; // Spielsekunden pro Echtzeitsekunde
 const MAX_STREAM_MS = 240_000;
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
           region: "euw",
           receivedAt: Date.now(),
           snapshot,
-          coach: coach(snapshot, data),
+          coach: coach(snapshot, data, { stats: buildStats }),
         };
         try {
           controller.enqueue(encoder.encode(`event: state\ndata: ${JSON.stringify(state)}\n\n`));

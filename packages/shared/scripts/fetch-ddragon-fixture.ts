@@ -28,7 +28,7 @@ const items = Object.fromEntries(
 const champions = Object.fromEntries(
   Object.entries(data.champions).map(([key, c]) => [
     key,
-    { id: c.id, key: c.key, name: c.name, title: "", tags: c.tags, info: c.info, image: { full: c.image.full } },
+    { id: c.id, key: c.key, name: c.name, title: "", tags: c.tags, info: c.info, stats: { attackrange: c.stats?.attackrange ?? 0 }, image: { full: c.image.full } },
   ]),
 );
 const out = new URL(`../test/fixtures/ddragon-${version}.json`, import.meta.url);

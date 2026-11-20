@@ -15,8 +15,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Ausgenommen: Assets, Zugangsseite, Companion-Download und die Companion-Endpunkte (eigenes Token)
+  // Ausgenommen: Assets, Zugangsseite, Companion-Download, Build-Statistik und die Companion-Endpunkte (eigenes Token)
   matcher: [
-    "/((?!_next/|favicon\\.ico|zugang|downloads/|api/live/ingest|api/companion/pair).*)",
+    "/((?!_next/|favicon\\.ico|zugang|downloads/|data/|api/live/ingest|api/companion/pair).*)",
   ],
 };

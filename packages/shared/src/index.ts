@@ -15,3 +15,6 @@ export * from "./live/simulator";
 export * from "./build/items";
 export * from "./build/engine";
 export * from "./build/coach";
+export * from "./build/stats";
+export * from "./build/lane";
+export * from "./build/jungle";

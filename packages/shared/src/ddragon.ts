@@ -15,6 +15,8 @@ export interface DDChampion {
   image: DDImage;
   info?: { attack: number; defense: number; magic: number; difficulty: number };
   partype?: string;
+  /** Basiswerte, u.a. attackrange (Nahkampf ≈ 125–175, Fernkampf ≥ 300) */
+  stats?: Record<string, number>;
 }
 
 export interface DDItem {

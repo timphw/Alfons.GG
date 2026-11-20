@@ -16,10 +16,12 @@ export class TerminalCoach {
     if (!c) return;
     const plan = c.build?.nextPurchase;
     const signature = [
+      // Komponenten-Vorschläge ändern sich mit jedem Gold-Tick → nicht Teil der Signatur
       c.build?.nextItem?.id,
       plan?.completes,
-      plan?.buyNow.map((b) => b.id).join("+"),
       c.tips.map((t) => t.id).join(","),
+      c.lane?.verdict,
+      c.jungle?.advice,
     ].join("|");
     if (signature === this.lastSignature || Date.now() - this.lastPrint < 3000) return;
     this.lastSignature = signature;
@@ -27,6 +29,12 @@ export class TerminalCoach {
 
     const lines: string[] = [];
     lines.push(`\n── Coach ${fmtTime(s.gameTime)} ${"─".repeat(40)}`);
+    if (c.now) lines.push(`  ▶ JETZT: ${c.now.text}`);
+    if (c.lane) {
+      const v = { ahead: "Vorteil", even: "Ausgeglichen", behind: "Nachteil" }[c.lane.verdict];
+      lines.push(`  ⚔ ${c.lane.role}: ${v}${c.lane.reasons.length ? ` – ${c.lane.reasons.slice(0, 2).join(" · ")}` : ""}`);
+    }
+    if (c.jungle?.gankTarget) lines.push(`  🎯 Gank-Ziel: ${c.jungle.gankTarget.lane} – ${c.jungle.gankTarget.reason}`);
     if (c.build?.nextItem && plan) {
       const it = c.build.nextItem;
       lines.push(
@@ -39,7 +47,7 @@ export class TerminalCoach {
       const next = c.build.items.slice(1, 4).map((i) => i.name);
       if (next.length) lines.push(`     danach: ${next.join(" → ")}`);
     }
-    for (const t of c.tips) lines.push(`  ${PRIO_MARK[t.priority]} ${t.text}`);
+    for (const t of c.tips) if (t.id !== c.now?.id) lines.push(`  ${PRIO_MARK[t.priority]} ${t.text}`);
     console.log(lines.join("\n") + "\n");
   }
 }
