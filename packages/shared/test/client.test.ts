@@ -47,6 +47,30 @@ describe("RiotClient", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it("liefert bei 429 den veralteten Stand statt zu warten oder zu scheitern", async () => {
+    const clock = new FakeClock();
+    const responses = [json([{ tier: "GOLD" }]), json({}, 429, { "Retry-After": "30" })];
+    const fetchMock = vi.fn(async () => responses.shift()!);
+    const client = new RiotClient({ apiKey: "K", fetch: fetchMock as unknown as typeof fetch, clock });
+    expect(await client.getLeagueEntries("euw1", "p", 60)).toEqual([{ tier: "GOLD" }]);
+    await clock.advance(61_000); // abgelaufen
+    expect(await client.getLeagueEntries("euw1", "p", 60)).toEqual([{ tier: "GOLD" }]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    // Limiter ist jetzt pausiert → kein weiterer Request, sofort alter Stand
+    expect(await client.getLeagueEntries("euw1", "p", 60)).toEqual([{ tier: "GOLD" }]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("aktualisiert abgelaufene Einträge, wenn Riot antwortet", async () => {
+    const clock = new FakeClock();
+    const responses = [json({ summonerLevel: 1 }), json({ summonerLevel: 2 })];
+    const fetchMock = vi.fn(async () => responses.shift()!);
+    const client = new RiotClient({ apiKey: "K", fetch: fetchMock as unknown as typeof fetch, clock });
+    await client.getSummonerByPuuid("euw1", "p");
+    await clock.advance(11 * 60_000);
+    expect(await client.getSummonerByPuuid("euw1", "p")).toEqual({ summonerLevel: 2 });
+  });
+
   it("wirft RiotApiError bei 403", async () => {
     const client = new RiotClient({
       apiKey: "K",

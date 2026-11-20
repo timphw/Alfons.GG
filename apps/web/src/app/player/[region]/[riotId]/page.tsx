@@ -22,7 +22,15 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const MATCH_COUNT = 10;
+/** Erst wenige Matches laden (je Match 1 Riot-Request), weitere auf Wunsch per `?matches=` */
+const MATCH_STEP = 5;
+const MATCH_MAX = 20;
+
+function matchCount(raw: string | string[] | undefined): number {
+  const n = Number(Array.isArray(raw) ? raw[0] : raw);
+  if (!Number.isFinite(n)) return MATCH_STEP;
+  return Math.min(MATCH_MAX, Math.max(MATCH_STEP, Math.ceil(n / MATCH_STEP) * MATCH_STEP));
+}
 
 export async function generateMetadata({
   params,
@@ -32,16 +40,20 @@ export async function generateMetadata({
   return { title: id ? formatRiotId(id) : "Spieler" };
 }
 
-export default function PlayerPage({ params }: PageProps<"/player/[region]/[riotId]">) {
+export default function PlayerPage({ params, searchParams }: PageProps<"/player/[region]/[riotId]">) {
   return (
     <Suspense fallback={<ProfileSkeleton />}>
-      <Profile params={params} />
+      <Profile params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function Profile({ params }: { params: PageProps<"/player/[region]/[riotId]">["params"] }) {
-  const { region: regionSlug, riotId } = await params;
+async function Profile({
+  params,
+  searchParams,
+}: Pick<PageProps<"/player/[region]/[riotId]">, "params" | "searchParams">) {
+  const [{ region: regionSlug, riotId }, query] = await Promise.all([params, searchParams]);
+  const count = matchCount(query.matches);
   const res = await load(async () => {
     const player = await resolvePlayer(regionSlug, riotId);
     if (!player.ok) return player;
@@ -93,11 +105,11 @@ async function Profile({ params }: { params: PageProps<"/player/[region]/[riotId
           <aside className="space-y-6">
             <RankCards entries={leagues ?? []} />
             <Suspense fallback={<Skeleton className="h-64" />}>
-              <MatchesSection region={region} account={account} part="champions" />
+              <MatchesSection region={region} account={account} count={count} part="champions" />
             </Suspense>
           </aside>
           <Suspense fallback={<MatchListSkeleton />}>
-            <MatchesSection region={region} account={account} part="matches" />
+            <MatchesSection region={region} account={account} count={count} part="matches" />
           </Suspense>
         </div>
       </div>
@@ -108,16 +120,18 @@ async function Profile({ params }: { params: PageProps<"/player/[region]/[riotId
 async function MatchesSection({
   region,
   account,
+  count,
   part,
 }: {
   region: RegionInfo;
   account: AccountDto;
+  count: number;
   part: "matches" | "champions";
 }) {
   const res = await load(async () => {
     const client = await riot();
     const [ids, data] = await Promise.all([
-      client.getMatchIds(region.matchRoute, account.puuid, { count: MATCH_COUNT }),
+      client.getMatchIds(region.matchRoute, account.puuid, { count }),
       getStaticData(),
     ]);
     const matches = await Promise.all((ids ?? []).map((id) => client.getMatch(region.matchRoute, id)));
@@ -131,7 +145,21 @@ async function MatchesSection({
 
   if (part === "champions")
     return <ChampionStatsCard data={data} stats={aggregateChampionStats(summaries)} sample={summaries.length} />;
-  return <MatchList data={data} matches={summaries} region={region} puuid={account.puuid} />;
+  const more = summaries.length >= count && count < MATCH_MAX;
+  return (
+    <div className="space-y-3">
+      <MatchList data={data} matches={summaries} region={region} puuid={account.puuid} />
+      {more && (
+        <Link
+          href={`/player/${region.slug}/${riotIdToSlug(account)}?matches=${count + MATCH_STEP}`}
+          scroll={false}
+          className={buttonVariants({ variant: "outline", className: "w-full" })}
+        >
+          Weitere Matches laden
+        </Link>
+      )}
+    </div>
+  );
 }
 
 function ProfileSkeleton() {

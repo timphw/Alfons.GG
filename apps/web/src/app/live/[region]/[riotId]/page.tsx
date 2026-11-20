@@ -7,6 +7,7 @@ import {
   parseRiotId,
   queueName,
   riotIdToSlug,
+  TTL,
   type CurrentGameInfo,
   type CurrentGameParticipant,
   type LeagueEntryDto,
@@ -49,10 +50,13 @@ async function Live({ params }: { params: PageProps<"/live/[region]/[riotId]">["
     const [game, data] = await Promise.all([client.getActiveGame(region.platform, account.puuid), getStaticData()]);
     if (!game) return { ...player, data, game: null, rankByPuuid: null };
 
-    // Solo/Duo-Ränge aller Teilnehmer (gecached, Fehler pro Spieler tolerieren)
+    // Solo/Duo-Ränge aller Teilnehmer – 30 min gecached (ändern sich im Spiel nicht; spart bei
+    // Auto-Refresh ~10 Requests je Aufruf), Fehler pro Spieler tolerieren
     const ranks = await Promise.all(
       game.participants.map((p) =>
-        p.puuid ? client.getLeagueEntries(region.platform, p.puuid).catch(() => null) : Promise.resolve(null),
+        p.puuid
+          ? client.getLeagueEntries(region.platform, p.puuid, TTL.leagueLive).catch(() => null)
+          : Promise.resolve(null),
       ),
     );
     const rankByPuuid = new Map<string, LeagueEntryDto | undefined>();
